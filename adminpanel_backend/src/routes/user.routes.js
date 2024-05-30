@@ -32,8 +32,9 @@ import {
   getNewsAndBlogs,
   updateProfile,
   updatePassword,
+
 } from "../controllers/user.controller.js";
-import { checkUser } from "../controllers/forgetpassword.controller.js";
+import { checkUser , verifyOtp } from "../controllers/forgetpassword.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
 // creating a router
@@ -57,6 +58,10 @@ router.route("/content").get(verifyJWT, getContent);
 router.route("/update-password").put(verifyJWT, updatePassword);
 
 router.route("/check-user").post(checkUser);
+
+
+router.route("/verify-otp").post(verifyOtp);
+
 
 // // LOGIN
 // router.route("/login").post(loginUser);

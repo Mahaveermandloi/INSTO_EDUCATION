@@ -1,37 +1,50 @@
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { Op } from "sequelize";
-import bcrypt from "bcrypt";
 import User from "../models/user.model.js";
 import nodemailer from "nodemailer";
 
 // Function to generate a random 4-digit OTP
-const generateOTP = () => {
-  return Math.floor(1000 + Math.random() * 9000);
+const generateOTP = () => Math.floor(1000 + Math.random() * 9000);
+
+// Function to create a Nodemailer transporter
+const createTransporter = () => {
+  return nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    // secure: false, // Use `true` for port 465, `false` for other ports (587 for TLS)
+    auth: {
+      user: "jay439363@gmail.com", // Your Gmail address
+      pass: "lwoxlcjtbmewosnc", // Your app password
+      // pass: "QWERTYUIOPpo", // Your app password
+    },
+  });
 };
 
 // Function to send OTP via email
 const sendOTPByEmail = async (email, otp) => {
-  console.log("I am here ");
-  // Create a Nodemailer transporter
-  let transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: "jay439363@gmail.com",
-      pass: "QWERTYUIOPpo",
-    },
-  });
+  const transporter = createTransporter();
 
-  // Send mail with defined transport object
-  await transporter.sendMail({
-    from: '"INSTO Education" <jay439363@gmail.com>', // sender address
-    to: email, // list of receivers
-    subject: "OTP Verification", // Subject line
+  const mailOptions = {
+    from: `"INSTO Education" <jay439363@gmail.com>`, // Your Gmail address
+    to: email,
+    subject: "OTP Verification",
     text: `Your OTP for verification is: ${otp}`,
-  });
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log("email sent ");
+  } catch (error) {
+    console.error("Error sending email:", error);
+    throw new ApiError(500, "Failed to send OTP email");
+  }
 };
 
+// Variable to store OTP globally
+let otp = "";
+
+// Controller function to check user and send OTP
 const checkUser = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
@@ -40,7 +53,7 @@ const checkUser = asyncHandler(async (req, res) => {
   }
 
   const user = await User.findOne({
-    where: { email }, // Assuming user.id is the newly created user's id
+    where: { email },
     attributes: { exclude: ["password", "refreshToken"] },
   });
 
@@ -48,59 +61,39 @@ const checkUser = asyncHandler(async (req, res) => {
     throw new ApiError(404, "User not found with this email");
   }
 
-  console.log(user);
-
-  // Generate a 4-digit OTP
-  const otp = generateOTP();
+  otp = generateOTP();
 
   console.log(otp);
 
-  // Send OTP to the user's email
-  //   await sendOTPByEmail(email, otp);
-
   try {
-
-    let transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: "faltumeramail@gmail.com",
-          pass: "QWERTYUIOP@12",
-        },
-      });
-
-
-    const mailOptions = {
-      from: "faltumeramail@gmail.com",
-      to: email,
-      subject: `RESET PASSWORD`,
-      html: `<h1>OTP is ${otp}</h1>`,
-    };
-
-    
-    transporter.sendMail(mailOptions, (err, info) => {
-      if (err) {
-        console.log("ERROR", err);
-      } else {
-        console.log("EMAIL SEND" + info.response);
-        return res.status(200).send(`OTP SENDED SUCCESSFULLY`);
-      }
+    await sendOTPByEmail(email, otp);
+    res
+      .status(200)
+      .json(new ApiResponse(200, { email, otp }, "OTP sent successfully"));
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to send OTP",
     });
-
-
-    
-  } catch (er) {
-    return res.status(404).send(er.message);
   }
-
-  // Respond with success message
-//   res.status(200).json({
-//     success: true,
-//     message: "OTP sent successfully",
-//     data: {
-//       email,
-//       otp, // For testing purposes, you might want to remove this in production
-//     },
-//   });
 });
 
-export { checkUser };
+const verifyOtp = asyncHandler(async (req, res) => {
+  const { getOtp } = req.body;
+
+  console.log("this is getOtp:", getOtp);
+  console.log("this is OTP", otp);
+
+  if (!getOtp) {
+    throw new ApiError(400, "No OTP sent");
+  }
+
+  if (parseInt(getOtp) !== parseInt(otp)) {
+    throw new ApiError(403, "Wrong OTP");
+  }
+  
+
+  res.status(200).json(new ApiResponse(200, true, "OTP verified successfully"));
+});
+
+export { checkUser, verifyOtp };
