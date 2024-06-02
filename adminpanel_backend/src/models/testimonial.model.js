@@ -30,3 +30,38 @@ const Testimonial = sequelize.define(
 );
 
 export default Testimonial;
+
+
+
+// import { DataTypes } from "sequelize";
+
+// export default (sequelize) => {
+//   const Testimonial = sequelize.define(
+//     "testimonial",
+//     {
+//       id: {
+//         type: DataTypes.UUID,
+//         defaultValue: DataTypes.UUIDV4,
+//         primaryKey: true,
+//       },
+
+//       name: {
+//         type: DataTypes.STRING,
+//         allowNull: false,
+//       },
+//       image: {
+//         type: DataTypes.STRING,
+//         allowNull: false,
+//       },
+//       description: {
+//         type: DataTypes.STRING(1000),
+//         allowNull: false,
+//       },
+//     },
+//     {
+//       timestamps: true,
+//     }
+//   );
+
+//   return Testimonial;
+// };

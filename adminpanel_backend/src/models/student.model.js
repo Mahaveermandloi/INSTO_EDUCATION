@@ -30,3 +30,69 @@ const Student = sequelize.define(
 );
 
 export default Student;
+
+
+
+
+
+// import { DataTypes } from "sequelize";
+
+// export default (sequelize) => {
+//   const Student = sequelize.define(
+//     "student",
+//     {
+//       id: {
+//         type: DataTypes.INTEGER,
+//         autoIncrement: true,
+//         primaryKey: true,
+//       },
+//       name: {
+//         type: DataTypes.STRING,
+//         allowNull: false,
+//       },
+//       email: {
+//         type: DataTypes.STRING,
+//         allowNull: false,
+//       },
+//       school_id: {
+//         type: DataTypes.STRING,
+//         allowNull: false,
+//       },
+//       address: {
+//         type: DataTypes.STRING,
+//         allowNull: false,
+//       },
+//       city: {
+//         type: DataTypes.STRING,
+//         allowNull: false,
+//       },
+//       state: {
+//         type: DataTypes.STRING,
+//         allowNull: false,
+//       },
+//       pincode: {
+//         type: DataTypes.STRING,
+//         allowNull: false,
+//       },
+//       mobile_number: {
+//         type: DataTypes.STRING,
+//         allowNull: false,
+//       },
+//       syllabus: {
+//         type: DataTypes.STRING,
+//         allowNull: false,
+//       },
+//       forgetToken: {
+//         type: DataTypes.STRING,
+//         allowNull: true,
+//         defaultValue: null,
+//       },
+//     },
+//     {
+//       timestamps: true,
+//       underscored: true,
+//     }
+//   );
+
+//   return Student;
+// };

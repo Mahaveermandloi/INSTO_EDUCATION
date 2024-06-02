@@ -61,12 +61,7 @@ const Profile = () => {
               </div>
               <table className="text-xs my-3">
                 <tbody>
-                  {/* <tr>
-                    <td className="px-2 py-2 text-lg text-gray-500 font-semibold">
-                      Subject
-                    </td>
-                    <td className="px-2 py-2 text-lg">Maths</td>
-                  </tr> */}
+                
                   <tr>
                     <td className="px-2 py-2 text-lg text-gray-500 font-semibold">
                       Phone

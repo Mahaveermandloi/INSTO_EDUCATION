@@ -13,7 +13,11 @@ import Student from "../models/student.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+
 import { Op } from "sequelize";
+
+
+
 import bcrypt from "bcrypt";
 
 // Register User
@@ -201,11 +205,6 @@ const showGallery = asyncHandler(async (req, res) => {
   // Fetch all gallery entries from the database
   const galleryEntries = await Gallery.findAll();
 
-  // Extract image URLs from gallery entries
-  // const imageUrls = galleryEntries.map((entry) => `/images/${entry.image}`);
-
-  // console.log(imageUrls);
-
   res.status(200).json(new ApiResponse(200, { galleryEntries }, "Image List"));
   // .json(new ApiResponse(200, { images: imageUrls }, "Image List"));
 });
@@ -217,17 +216,21 @@ const uploadImage = asyncHandler(async (req, res) => {
     throw new ApiError(403, "Image not available");
   }
 
-  const randomId = Math.floor(Math.random() * 1000000);
+  // const newEntry = await Gallery.create({
+  //   image: `/temp/${galleryImage.originalname}`, // Store the relative path
+  //   id: randomId,
+  //   timestamp: new Date(),
+  // });
 
   const newEntry = await Gallery.create({
     image: `/temp/${galleryImage.originalname}`, // Store the relative path
-    id: randomId,
-    timestamp: new Date(),
+    caption: req.body.caption || null, // Optionally add a caption
   });
 
   if (!newEntry) {
     throw new ApiError(400, "Error while uploading the image");
   }
+  
 
   return res
     .status(200)
@@ -801,8 +804,6 @@ const uploadStudent = asyncHandler(async (req, res) => {
 
 // -------------------------------------------------------------------------------
 
-
-
 // -----------------------------------------------------------------------------
 export {
   loginUser,
@@ -835,7 +836,6 @@ export {
   getNewsAndBlogs,
   updateProfile,
   updatePassword,
-  
 };
 
 // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NzQ5ODk5LCJlbWFpbCI6InVzZXJAZ21haWwuY29tIiwiaWF0IjoxNzE2NzkwNzc1LCJleHAiOjE3MTczMDkxNzV9.PhaO1CO7ta-8s4shjKxzeAOf9ows4nMTaFiR3nyDHl4

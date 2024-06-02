@@ -78,14 +78,6 @@ router.route("/verify-token").post(verifyToken);
 // // DASHBOARD
 // router.route("/dashboard").post(verifyJWT, showDashboardDetails);
 
-// // -----------------GALLERY--------------------------------------------------
-router.route("/show-gallery").get(verifyJWT, showGallery);
-
-router
-  .route("/upload-image")
-  .post(verifyJWT, upload.single("image"), uploadImage);
-
-router.route("/delete-image/:id").delete(verifyJWT, deleteImage);
 
 // -----------------------------BANNER =-----------------------------------------
 

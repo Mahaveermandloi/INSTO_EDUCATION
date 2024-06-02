@@ -10,6 +10,7 @@ const User = sequelize.define(
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       allowNull: false,
+      autoIncrement: true,
       primaryKey: true,
     },
     name: {
@@ -20,7 +21,6 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       defaultValue: null,
     },
-
     email: {
       type: DataTypes.STRING,
       unique: true,
