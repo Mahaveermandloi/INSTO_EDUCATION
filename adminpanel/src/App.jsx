@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  useNavigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./Components/Header";
-import SignUp from "./Components/SignUp";
 import Login from "./Components/Login";
 import Dashboard from "./Components/Dashboard";
 import Gallery from "./Components/Gallery";
@@ -22,11 +16,11 @@ import UpdateProfile from "./Components/UpdateProfile";
 import ChangePassword from "./Components/ChangePassword";
 import ForgetPassword from "./Components/ForgetPassword";
 import OtpPage from "./Components/OtpPage";
-// import ResetPassword from "./Components/ResetPassword";
+import Image from "./Components/Resources/Image";
+import Video from "./Components/Resources/Video";
+import Pdf from "./Components/Resources/Pdf";
 
 const App = () => {
-  // const navigate = useNavigate();
-
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -40,18 +34,10 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
-
-        {/* <Route path="/register" element={<SignUp />} /> */}
-
+        <Route path="/login" element={<Login />} />
         <Route path="/forgetpassword" element={<ForgetPassword />} />
         <Route path="/otppage/:email" element={<OtpPage />} />
-
-        {/* <Route path="/resetpassword" element={<ResetPassword />} /> */}
-
-        {/* <Route path="/otppage" element={<OtpPage />} /> */}
-
-        {/* You can place your Sidebar here */}
-        {/* <Header /> */}
+        <Route path="/changepassword" element={<ChangePassword />} />
 
         <Route
           path="/*"
@@ -60,8 +46,9 @@ const App = () => {
               <div className="">
                 <Header />
                 <SideBar />
-                <main className="  p-5 ml-auto w-full ">
+                <main className="p-5 ml-auto w-full">
                   <Routes>
+                    <Route path="/" element={<Dashboard />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/gallery" element={<Gallery />} />
                     <Route path="/banner" element={<Banner />} />
@@ -70,12 +57,13 @@ const App = () => {
                     <Route path="/testimonials" element={<Testimonials />} />
                     <Route path="/student" element={<Student />} />
                     <Route path="/content" element={<Content />} />
+
+                    <Route path="/image" element={<Image />} />
+                    <Route path="video" element={<Video />} />
+                    <Route path="pdf" element={<Pdf />} />
+
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/updateprofile" element={<UpdateProfile />} />
-                    <Route
-                      path="/changepassword"
-                      element={<ChangePassword />}
-                    />
                   </Routes>
                 </main>
               </div>

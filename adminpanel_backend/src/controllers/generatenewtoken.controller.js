@@ -6,4 +6,12 @@ import bcrypt from "bcrypt";
 import User from "../models/user.model.js";
 import nodemailer from "nodemailer";
 
+const generateNewToken = asyncHandler(async (req, res) => {
+  
+     
+
+});
+
+
+export {generateNewToken};
 

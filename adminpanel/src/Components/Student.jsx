@@ -31,7 +31,7 @@ const Student = () => {
   return (
     <div className="lg:w-10/12 lg:ml-auto">
       <div>
-        <h1 className="text-2xl lg:text-4xl my-5 font-bold">Student</h1>
+        <h1 className="text-2xl lg:text-4xl my-5 font-bold">Student List</h1>
       </div>
       <div className="flex justify-center flex-col space-y-5">
         <select id="" name="" className="w-full p-4 rounded-md border-2">

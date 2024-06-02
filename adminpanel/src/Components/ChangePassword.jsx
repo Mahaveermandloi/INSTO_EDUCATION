@@ -1,126 +1,234 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast, Bounce } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import logo from "../assets/Intso_Slicing_Assets/Header_Logo/Header_Logo.png";
 
 const ChangePassword = () => {
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [timeRemaining, setTimeRemaining] = useState(120); // 5 minutes in seconds
+
+  const location = useLocation();
   const navigate = useNavigate();
+  const { token, email } = location.state || {};
 
-  const [formData, setFormData] = useState({
-    oldPassword: "",
-    newPassword: "",
-  });
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (timeRemaining > 0) {
+        setTimeRemaining((prevTime) => prevTime - 1);
+      } else {
+        navigate("/login");
+      }
+    }, 1000); // Update time every second
 
-  const [error, setError] = useState("");
+    return () => clearTimeout(timer);
+  }, [timeRemaining, navigate]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-    setError(""); // Clear error when user types
-  };
+  useEffect(() => {
+    const verifyToken = async () => {
+      if (!token || !email) {
+        navigate("/login");
+        return;
+      }
 
-  const validatePassword = (password) => {
-    const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    return regex.test(password);
-  };
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/verify-token",
+          { token, email }
+        );
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+        if (response.status !== 200) {
+          navigate("/login");
+        }
+      } catch (error) {
+        navigate("/login");
+      }
+    };
 
-    if (!validatePassword(formData.newPassword)) {
-      setError("Password must be at least 8 characters long and include both letters and numbers.");
+    verifyToken();
+  }, [token, email, navigate]);
+
+  const handleChangePassword = async () => {
+    // Check if password is alphanumeric
+    const alphanumericRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    if (!alphanumericRegex.test(password)) {
+      toast.error(
+        "Password must be at least 8 characters long and include both letters and numbers.",
+        {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        }
+      );
       return;
     }
 
-    const accessToken = localStorage.getItem("accessToken");
-    if (!accessToken) {
-      console.error("No access token found");
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       return;
     }
 
     try {
       const response = await axios.put(
-        "http://localhost:8000/update-password",
+        "http://localhost:8000/update-new-password",
         {
-          oldPassword: formData.oldPassword,
-          newPassword: formData.newPassword,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+          email,
+          password,
         }
       );
 
-      alert(formData.oldPassword);
-      alert(formData.newPassword);
-
-      alert("Password Changed Successfully");
-      navigate("/profile");
-      console.log("Password changed successfully:", response.data);
-    } catch (error) {
-      if (error.response && error.response.status === 403) {
-        alert("Old Password is incorrect");
+      if (response.status === 200) {
+        toast.success("Password changed successfully", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
       } else {
-        console.error("Error changing password:", error);
+        toast.error("Failed to change password", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
+    } catch (error) {
+      toast.error(
+        "Error changing password: " +
+          (error.response?.data?.message || error.message),
+        {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        }
+      );
     }
   };
 
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
   return (
-    <div className="max-w-lg mx-auto mt-5">
-      <h1 className="text-2xl font-bold mb-5">Change Password</h1>
-      <form className="w-full max-w-lg" onSubmit={handleSubmit}>
-        <div className="flex flex-wrap -mx-3 mb-6">
-          <div className="w-full px-3 mb-6 md:mb-0">
-            <label
-              className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-              htmlFor="oldPassword"
-            >
-              Old Password
-            </label>
-            <input
-              className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-              id="oldPassword"
-              name="oldPassword"
-              type="password"
-              placeholder="Enter your old password"
-              value={formData.oldPassword}
-              onChange={handleChange}
-            />
+    <div className="relative flex min-h-screen flex-col justify-center overflow-hidden bg-gray-50 p-4  lg:py-12">
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
+      <center>
+        <img className="w-52 lg:w-56 lg:my-10" src={logo} alt="logo" />
+      </center>
+      <div className="relative bg-white px-6 pt-10 pb-9 shadow-xl mx-auto w-full max-w-md rounded-2xl">
+        <div className="mx-auto flex w-full max-w-md flex-col space-y-4">
+          <div className="flex flex-col items-center justify-center text-center space-y-2">
+            <div className="font-semibold text-3xl">
+              <p className="text-gray-800">Change Password</p>
+            </div>
+          </div>
+
+          <div>
+            <div className="flex flex-col space-y-4">
+              <div className="flex flex-row items-center justify-center mx-auto w-full max-w-xs">
+                <div className="h-16">
+                  <input
+                    className=" text-black hover:bg-primary-700  focus:outline-none focus:ring-primary-300 font-normal rounded-lg  px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800
+                    border
+                    border-gray-200 text-2xl bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter new password"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-row items-center justify-center mx-auto w-full max-w-xs">
+                <div className="h-16">
+                  <input
+                    className="text-black hover:bg-primary-700  focus:outline-none focus:ring-primary-300 font-normal rounded-lg text-md px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800
+                    border
+                    border-gray-200 text-2xl bg-white focus:bg-gray-50 focus:ring-1 ring-blue-700"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Confirm new password"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col space-y-5">
+                <div>
+                  <button
+                    className="w-full text-white bg-[#ed1450] hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-md px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                    onClick={handleChangePassword}
+                  >
+                    Change Password
+                  </button>
+                </div>
+
+                <div>
+                  <button
+                    className="w-full text-white bg-[#ed1450] hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-md px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                    onClick={() => navigate("/login")}
+                  >
+                    Go back to Login
+                  </button>
+                </div>
+
+                <div className="text-red-500 font-bold text-2xl text-center">
+                  Time Remaining: {formatTime(timeRemaining)}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="flex flex-wrap -mx-3 mb-6">
-          <div className="w-full px-3 mb-6 md:mb-0">
-            <label
-              className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-              htmlFor="newPassword"
-            >
-              New Password
-            </label>
-            <input
-              className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-              id="newPassword"
-              name="newPassword"
-              type="password"
-              placeholder="Enter your new password"
-              value={formData.newPassword}
-              onChange={handleChange}
-            />
-            {error && <p className="text-red-500 text-xs italic">{error}</p>}
-          </div>
-        </div>
-        <div className="flex justify-end">
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit"
-          >
-            Change Password
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   );
 };

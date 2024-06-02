@@ -41,6 +41,10 @@ const User = sequelize.define(
     refreshToken: {
       type: DataTypes.STRING, // Define a column to store refresh tokens
     },
+    forgetToken: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     timestamps: true,

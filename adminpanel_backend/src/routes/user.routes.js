@@ -32,11 +32,16 @@ import {
   getNewsAndBlogs,
   updateProfile,
   updatePassword,
-
 } from "../controllers/user.controller.js";
-import { checkUser , verifyOtp } from "../controllers/forgetpassword.controller.js";
+import {
+  checkUser,
+  verifyOtp,
+  verifyToken,
+  updateNewPassword,
+} from "../controllers/forgetpassword.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
+import { generateNewToken } from "../controllers/generatenewtoken.controller.js";
 // creating a router
 
 const router = Router();
@@ -57,11 +62,15 @@ router.route("/content").get(verifyJWT, getContent);
 
 router.route("/update-password").put(verifyJWT, updatePassword);
 
-router.route("/check-user").post(checkUser);
+router.route("/update-new-password").put(updateNewPassword);
 
+router.route("/check-user").post(checkUser);
 
 router.route("/verify-otp").post(verifyOtp);
 
+router.route("/verify-token").post(verifyToken);
+
+// router.route("/generate-new-token").post(generateNewToken);
 
 // // LOGIN
 // router.route("/login").post(loginUser);
