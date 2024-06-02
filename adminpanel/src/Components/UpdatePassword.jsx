@@ -40,6 +40,8 @@ const UpdatePassword = () => {
           progress: undefined,
           theme: "light",
         }
+
+        
       );
       return;
     }
