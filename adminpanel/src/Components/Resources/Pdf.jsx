@@ -22,7 +22,7 @@ const Pdf = () => {
       const accessToken = localStorage.getItem("accessToken");
       if (accessToken) {
         const response = await axios.get(
-          "http://localhost:8001/api/v1/resource/get-all-resources"
+          "http://localhost:8000/api/v1/resource/get-all-resources"
         );
 
         // Filter only PDF resources
@@ -96,7 +96,7 @@ const Pdf = () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.post(
-          "http://localhost:8001/api/v1/resource/create-resource",
+          "http://localhost:8000/api/v1/resource/create-resource",
           formData,
           {
             headers: {
@@ -160,7 +160,7 @@ const Pdf = () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.delete(
-          `http://localhost:8001/api/v1/resource/delete-resource/${id}`,
+          `http://localhost:8000/api/v1/resource/delete-resource/${id}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,

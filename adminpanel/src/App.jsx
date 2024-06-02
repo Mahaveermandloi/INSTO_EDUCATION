@@ -19,6 +19,7 @@ import OtpPage from "./Components/OtpPage";
 import Image from "./Components/Resources/Image";
 import Video from "./Components/Resources/Video";
 import Pdf from "./Components/Resources/Pdf";
+import UpdatePassword from "./Components/UpdatePassword";
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -64,6 +65,15 @@ const App = () => {
 
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/updateprofile" element={<UpdateProfile />} />
+
+                    <Route
+                      path="/updatepassword"
+                      element={<UpdatePassword />}
+                    />
+
+
+
+                    
                   </Routes>
                 </main>
               </div>

@@ -17,7 +17,7 @@ const Gallery = () => {
 
         if (accessToken) {
           const response = await axios.get(
-            "http://localhost:8001/api/v1/gallery/getGallery",
+            "http://localhost:8000/api/v1/gallery/getGallery",
             {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -74,7 +74,7 @@ const Gallery = () => {
         const accessToken = localStorage.getItem("accessToken");
 
         const response = await axios.post(
-          "http://localhost:8001/api/v1/gallery/postGallery",
+          "http://localhost:8000/api/v1/gallery/postGallery",
           formData,
           {
             headers: {
@@ -132,7 +132,7 @@ const Gallery = () => {
         
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.delete(
-          `http://localhost:8001/api/v1/gallery/deleteGalleryImage/${id}`,
+          `http://localhost:8000/api/v1/gallery/deleteGalleryImage/${id}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -204,7 +204,7 @@ const Gallery = () => {
                 <div key={id} className="relative">
                   <img
                     className="h-auto max-w-full rounded-lg"
-                    src={`http://localhost:8001${gallery_img}`}
+                    src={`http://localhost:8000${gallery_img}`}
                     alt={`Gallery image`}
                   />
                   <button
@@ -351,7 +351,7 @@ const Gallery = () => {
                 <div key={id} className="relative">
                   <img
                     className="h-auto max-w-full rounded-lg"
-                    src={`http://localhost:8001${gallery_img}`}
+                    src={`http://localhost:8000${gallery_img}`}
                     alt={`Gallery image`}
                   />
                   <button

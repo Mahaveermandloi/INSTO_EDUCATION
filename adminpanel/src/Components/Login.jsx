@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -43,7 +44,7 @@ const Login = () => {
 
         toast.success("Login successful!", {
           position: "top-center",
-          autoClose: 3000,
+          autoClose: 2000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -52,15 +53,17 @@ const Login = () => {
           theme: "light",
         });
 
-        // Redirect to /dashboard and prevent going back to /login
+        navigate("/dashboard");
+
         setTimeout(() => {
-          window.location.href = "/dashboard";
-          window.history.replaceState({}, document.title, "/dashboard");
+          window.location.reload()
+          
         }, 2000);
+
       }
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        toast.error("User doesnot exists", {
+        toast.error("User does not exist", {
           position: "top-center",
           autoClose: 3000,
           hideProgressBar: false,
@@ -89,8 +92,6 @@ const Login = () => {
     }
   };
 
-
-  
   const validatePassword = (password) => {
     // Password must be at least 8 characters long and contain alphanumeric characters only
     const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
@@ -113,10 +114,7 @@ const Login = () => {
         transition={Bounce}
       />
       <section className="bg-gray-100 ">
-      
-      
         <div className="flex  flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-        
           <a
             href="#"
             className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
@@ -124,16 +122,13 @@ const Login = () => {
             <img className="w-52 lg:w-72 mr-2" src={logo} alt="logo" />
           </a>
 
-
           <div className="w-full bg-gray-200  rounded-lg  shadow border md:mt-0 sm:max-w-md xl:p-0  dark:border-gray-700">
-
-
             <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
               <h1 className="text-xl font-bold leading-tight tracking-tight text-[#ed1450] md:text-2xl ">
                 Login to Dashboard
               </h1>
               {/* // ed1450
-  // fafafa 
+  // fafafa
   313866
   */}
 
@@ -180,19 +175,13 @@ const Login = () => {
                 >
                   Login In
                 </button>
-                <p className="text-md  text-gray-900 font-semibold "> 
+                <p className="text-md  text-gray-900 font-semibold ">
                   <Link to="/forgetpassword">Forget Password ?</Link>
                 </p>
               </form>
-
-
-              
             </div>
           </div>
         </div>
-
-
-
       </section>
     </>
   );

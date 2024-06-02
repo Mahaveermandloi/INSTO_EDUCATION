@@ -10,7 +10,7 @@ const Video = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
- 
+
   const [resourceURL, setResourceURL] = useState("");
 
   const [isMobileFormVisible, setIsMobileFormVisible] = useState(false);
@@ -20,7 +20,7 @@ const Video = () => {
       const accessToken = localStorage.getItem("accessToken");
       if (accessToken) {
         const response = await axios.get(
-          "http://localhost:8001/api/v1/resource/get-all-resources"
+          "http://localhost:8000/api/v1/resource/get-all-resources"
         );
 
         // Filter only PDF resources
@@ -71,7 +71,7 @@ const Video = () => {
 
       formData.append("title", title);
       formData.append("description", description);
-     
+
       formData.append("resource_url", resourceURL);
       formData.append("resource_type", "video"); // Assuming image is always selected
       formData.append("is_paid", selectedOption === "paid");
@@ -83,7 +83,7 @@ const Video = () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.post(
-          "http://localhost:8001/api/v1/resource/create-resource",
+          "http://localhost:8000/api/v1/resource/create-resource",
           formData,
           {
             headers: {
@@ -108,7 +108,7 @@ const Video = () => {
           setSelectedFile(null);
           setTitle("");
           setDescription("");
-          
+
           setResourceURL("");
 
           window.location.reload();
@@ -146,7 +146,7 @@ const Video = () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.delete(
-          `http://localhost:8001/api/v1/resource/delete-resource/${id}`,
+          `http://localhost:8000/api/v1/resource/delete-resource/${id}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -234,16 +234,16 @@ const Video = () => {
                   return (
                     <>
                       <div key={id} className="relative">
-                        <a href=" https://www.youtube.com/watch?v=lXQgSJsqLyw">
+                        <a
+                          href=" https://www.youtube.com/watch?v=lXQgSJsqLyw"
+                          target="_blank"
+                        >
                           <img
                             className="h-auto max-w-full rounded-lg hover:opacity-50"
-                            src={`http://localhost:8001${thumbnail}`}
+                            src={`http://localhost:8000${thumbnail}`}
                             alt={`data image ${id}`}
                           />
-                         
                         </a>
-
-                        
 
                         <button
                           onClick={() => handleDelete(id)}
@@ -323,7 +323,7 @@ const Video = () => {
               className="mt-2 p-2 border rounded-lg w-full"
               required
             />
-          
+
             <input
               type="text"
               placeholder="Resource URL"
@@ -363,7 +363,7 @@ const Video = () => {
                       <div key={id} className="relative">
                         <img
                           className="h-auto max-w-full rounded-lg"
-                          src={`http://localhost:8001${thumbnail}`}
+                          src={`http://localhost:8000${thumbnail}`}
                           alt={`data image ${id}`}
                         />
                         <button
@@ -448,7 +448,7 @@ Copy code
                   className="mt-2 p-2 border rounded-lg w-full"
                   required
                 />
-              
+
                 <input
                   type="text"
                   placeholder="Resource URL"
@@ -475,11 +475,16 @@ Copy code
               {data &&
                 data.map(({ id, thumbnail }) => (
                   <div key={id} className="relative">
-                    <img
-                      className="h-auto max-w-full rounded-lg"
-                      src={`http://localhost:8001${thumbnail}`}
-                      alt={`data image ${id}`}
-                    />
+                    <a
+                      href="https://www.youtube.com/watch?v=JlgkMXex2DI&list=RDcWMxCE2HTag&index=3"
+                      target="_blank"
+                    >
+                      <img
+                        className="h-auto max-w-full rounded-lg"
+                        src={`http://localhost:8000${thumbnail}`}
+                        alt={`data image ${id}`}
+                      />
+                    </a>
 
                     <button
                       onClick={() => handleDelete(id)}

@@ -17,7 +17,7 @@ const Banner = () => {
       if (accessToken) {
         const response = await axios.get(
          
-          "http://localhost:8001/api/v1/banner/getBannerData",
+          "http://localhost:8000/api/v1/banner/getBannerData",
           
         );
         console.log(response.data);
@@ -65,7 +65,7 @@ const Banner = () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.post(
-          "http://localhost:8001/api/v1/banner/upload-banner-image",
+          "http://localhost:8000/api/v1/banner/upload-banner-image",
           formData,
           {
             headers: {
@@ -129,7 +129,7 @@ const Banner = () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.delete(
-          `http://localhost:8001/api/v1/banner/delete-banner-image/${id}`,
+          `http://localhost:8000/api/v1/banner/delete-banner-image/${id}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -202,7 +202,7 @@ const Banner = () => {
                   <div key={id} className="relative">
                     <img
                       className="h-auto max-w-full rounded-lg"
-                      src={`http://localhost:8001${image}`}
+                      src={`http://localhost:8000${image}`}
                       alt={`Gallery image ${id}`}
                     />
                    
@@ -389,7 +389,7 @@ ChatGPT
                   <div className="relative" key={id}>
                     <img
                       className="h-auto max-w-full rounded-lg"
-                      src={`http://localhost:8001${image}`}
+                      src={`http://localhost:8000${image}`}
                       alt={`Gallery image`}
                     />
                     <button

@@ -21,7 +21,7 @@ const Image = () => {
   //     const accessToken = localStorage.getItem("accessToken");
   //     if (accessToken) {
   //       const response = await axios.get(
-  //         "http://localhost:8001/api/v1/resource/get-all-resources"
+  //         "http://localhost:8000/api/v1/resource/get-all-resources"
   //       );
   //       setData(response.data.data.resourcesData);
   //       console.log(response.data.data.resourcesData);
@@ -38,7 +38,7 @@ const Image = () => {
       const accessToken = localStorage.getItem("accessToken");
       if (accessToken) {
         const response = await axios.get(
-          "http://localhost:8001/api/v1/resource/get-all-resources"
+          "http://localhost:8000/api/v1/resource/get-all-resources"
         );
 
         // Filter only PDF resources
@@ -98,7 +98,7 @@ const Image = () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.post(
-          "http://localhost:8001/api/v1/resource/create-resource",
+          "http://localhost:8000/api/v1/resource/create-resource",
           formData,
           {
             headers: {
@@ -161,7 +161,7 @@ const Image = () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.delete(
-          `http://localhost:8001/api/v1/resource/delete-resource/${id}`,
+          `http://localhost:8000/api/v1/resource/delete-resource/${id}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -250,7 +250,7 @@ const Image = () => {
                       <div key={id} className="relative">
                         <img
                           className="h-auto max-w-full rounded-lg"
-                          src={`http://localhost:8001${resource_url}`}
+                          src={`http://localhost:8000${resource_url}`}
 
                           alt={`data image ${id}`}
                         />
@@ -385,7 +385,7 @@ const Image = () => {
                       <div key={id} className="relative">
                         <img
                           className="h-auto max-w-full rounded-lg"
-                          src={`http://localhost:8001${resource_url}`}
+                          src={`http://localhost:8000${resource_url}`}
                           alt={`data image ${id}`}
                         />
                        
@@ -502,7 +502,7 @@ const Image = () => {
                   <div key={id} className="relative">
                     <img
                       className="h-auto max-w-full rounded-lg"
-                      src={`http://localhost:8001${resource_url}`}
+                      src={`http://localhost:8000${resource_url}`}
                       alt={`data image ${id}`}
                     />
                     <button
