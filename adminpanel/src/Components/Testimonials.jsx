@@ -1,87 +1,143 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { RxCross1 } from "react-icons/rx";
+import { ToastContainer, toast, Bounce } from "react-toastify";
+import logo from "../assets/pdf.png";
 
 const Testimonials = () => {
-  const [testimonialData, setTestimonialData] = useState({
-    name: "",
-    description: "",
-    image: null,
-  });
+  const [testimonial, setTestimonial] = useState([]);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
 
-  const [fetchData, setFetchData] = useState([]);
+  const [isMobileFormVisible, setIsMobileFormVisible] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchTestimonial = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.get(
-          "http://localhost:8000/show-testimonials",
+
+        if (accessToken) {
+          const response = await axios.get(
+            "http://localhost:8000/api/v1/testimonial/get-testimonial",
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+
+          setTestimonial(response.data.data.testimonialData);
+          console.log(response.data.data.testimonialData);
+        } else {
+          console.error("No access token found");
+        }
+      } catch (error) {
+        console.error("Error fetching gallery:", error);
+      }
+    };
+
+    fetchTestimonial();
+  }, []);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      setSelectedFile(file);
+    } else {
+      setSelectedFile(null);
+      toast.error("Please select an image file.", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+
+  const handleNameChange = (event) => {
+    setName(event.target.value);
+  };
+
+  const handleDescriptionChange = (event) => {
+    setDescription(event.target.value);
+  };
+
+  const handleUpload = async () => {
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append("image", selectedFile);
+      formData.append("name", name);
+      formData.append("description", description);
+
+      console.log(name, description, selectedFile);
+
+      try {
+        const accessToken = localStorage.getItem("accessToken");
+
+        const response = await axios.post(
+          "http://localhost:8000/api/v1/testimonial/post-testimonial",
+          formData,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "multipart/form-data",
             },
           }
         );
 
-        setFetchData(response.data.data.data);
-        console.log(response.data.data.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        alert("Error fetching data. Please try again.");
-      }
-    };
-    fetchData();
-  }, []);
-
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const formData = new FormData();
-      formData.append("name", testimonialData.name);
-      formData.append("description", testimonialData.description);
-      formData.append("image", testimonialData.image);
-
-      console.log(formData);
-
-      const accessToken = localStorage.getItem("accessToken");
-      const response = await axios.post(
-        "http://localhost:8000/upload-testimonials",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "multipart/form-data",
-          },
+        if (response.status === 200) {
+          toast.success("Image uploaded successfully!", {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000); // Wait for 2 seconds before reloading
         }
-      );
-
-      if (response.status === 200) {
-        alert("Testimonial uploaded successfully!");
-        setTestimonialData({
-          name: "",
-          description: "",
-          image: null,
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        toast.error("Error uploading image. Please try again.", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
         });
-        window.location.reload();
       }
-
-      if (response.status === 403) {
-        alert("Testimonial already exists");
-      }
-    } catch (error) {
-      console.error("Error uploading testimonial:", error);
-      alert("Error uploading testimonial. Please try again.");
+    } else {
+      toast.error("Please select an image file.", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   };
 
   const handleDelete = async (id) => {
-    if (
-      window.confirm("Are you sure you want to delete this testimonial?")
-    ) {
+    if (window.confirm("Are you sure you want to delete this image?")) {
       try {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.delete(
-          `http://localhost:8000/delete-testimonials/${id}`,
+          `http://localhost:8000/api/v1/testimonial/delete-testimonial/${id}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -90,116 +146,268 @@ const Testimonials = () => {
         );
 
         if (response.status === 200) {
-          alert("Testimonial deleted successfully");
-          setFetchData(fetchData.filter((item) => item.id !== id));
+          toast.success("Image successfully deleted", {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          setTestimonial((prevTestimonial) =>
+            prevTestimonial.filter((item) => item.id !== id)
+          ); // Update the testimonial state without reloading
         }
       } catch (error) {
-        console.error("Error deleting testimonial:", error);
-        alert("Error deleting testimonial. Please try again.");
+        console.error("Error deleting image:", error);
+        toast.error("Error deleting image. Please try again.", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
     }
   };
 
+  const toggleMobileForm = () => {
+    setIsMobileFormVisible(!isMobileFormVisible);
+  };
+
   return (
     <>
-      <div className="lg:w-10/12 lg:ml-auto">
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
+      <div className="lg:w-10/12 lg:ml-auto ">
         <div>
-          <h1 className="text-2xl lg:text-4xl my-5 font-bold">Testimonials</h1>
+          <h1 className="text-2xl lg:text-4xl  font-bold">Testimonial</h1>
         </div>
 
-        <div className="lg:flex justify-between p-5 lg:gap-10 space-y-10 lg:space-y-0">
-          <div className="border-2 border-gray-200 p-3 lg:w-2/3 space-y-5">
-            {/* -------------card */}
-            {Array.isArray(fetchData) &&
-              fetchData.map((item) => (
-                <div className="flex border items-center" key={item.id}>
+        <div className="flex justify-around   lg:gap-4 ">
+          {/* Form for desktop view */}
+
+          <div className=" hidden lg:w-3/4 gap-10 lg:grid grid-cols-2 lg:items-end lg:mt-5  lg:p-5 lg:border-2 lg:border-gray-400 lg:rounded-lg lg:shadow-lg">
+            {testimonial &&
+              testimonial.map(({ id, image, name, description }) => (
+                <div
+                  key={id}
+                  className="relative flex h-28 flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700"
+                >
                   <img
-                    src={`http://localhost:8000/${item.image}`}
-                    alt="image"
-                    className="w-20 h-20 rounded-xl"
+                    className="object-cover w-full rounded-t-lg h-28 md:w-48 md:rounded-none md:rounded-s-lg bg-yellow-400"
+                    src={`http://localhost:8000${image}`}
+                    alt=""
                   />
-                  <div className="border-2 border-gray-200 h-20 rounded-xl w-full">
-                    <h1>{item.name}</h1>
-                    <h2>{item.description}</h2>
+                  <div className="flex flex-col justify-between p-4 leading-normal">
+                    <h5 className="text-lg pt-3 font-bold tracking-tight text-gray-900 dark:text-white">
+                      {name}
+                    </h5>
+                    <p className="mb-3 font-normal text-gray-700 dark:text-gray-400 overflow-hidden overflow-ellipsis line-clamp-3">
+                      {description}
+                    </p>
                   </div>
                   <button
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-4"
-                    onClick={() => handleDelete(item.id)}
+                    onClick={() => handleDelete(id)}
+                    className="absolute top-2 right-2 bg-[#ed1450] text-white p-1 rounded-full"
                   >
-                    Delete
+                    <RxCross1 size={30} className="p-1" />
                   </button>
                 </div>
               ))}
+
+            {/* images should be displayed here  in desktop view  */}
           </div>
-          <div className="lg:w-1/3 border-2 border-gray-200">
-            <div className="w-full">
-              <form
-                className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-                onSubmit={handleFormSubmit}
+
+          <div className="hidden w-1/4 lg:flex  lg:flex-col lg:items-end lg:mt-5 lg:p-5 lg:border-2 lg:border-gray-400 lg:rounded-lg lg:shadow-lg">
+            <div className="flex items-center justify-center w-full">
+              <label
+                htmlFor="dropzone-file"
+                className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 "
               >
-                <div className="mb-4">
-                  <label
-                    className="block text-gray-700 text-sm font-bold mb-2"
-                    htmlFor="name"
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  <svg
+                    className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 16"
                   >
-                    Name
-                  </label>
-                  <input
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="name"
-                    type="text"
-                    value={testimonialData.name}
-                    onChange={(e) =>
-                      setTestimonialData({ ...testimonialData, name: e.target.value })
-                    }
-                    placeholder="Enter Name"
-                  />
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h3"
+                    />
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M10 12v4m0 0-3-3m3 3 3-3"
+                    />
+                  </svg>
+                  <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                    <span className="font-semibold">Click to upload</span> or
+                    drag and drop
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    SVG, PNG, JPG or GIF (MAX. 800x400px)
+                  </p>
                 </div>
-                <div className="mb-6">
-                  <label
-                    className="block text-gray-700 text-sm font-bold mb-2"
-                    htmlFor="description"
+                <input
+                  id="dropzone-file"
+                  type="file"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+              </label>
+            </div>
+
+            <input
+              type="text"
+              id="helper-text"
+              aria-describedby="helper-text-explanation"
+              className="mt-5  bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+              placeholder="Name"
+              value={name}
+              onChange={handleNameChange}
+            />
+
+            <textarea
+              id="message"
+              rows="4"
+              className="mt-5 block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 "
+              placeholder="Description"
+              value={description}
+              onChange={handleDescriptionChange}
+            ></textarea>
+            <button
+              className="w-full text-white bg-[#ed1450] hover:bg-primary-700 font-medium text-md rounded-md px-5 py-2.5 mt-2 text-center"
+              onClick={handleUpload}
+            >
+              Upload
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Toggle button and form for mobile view */}
+      <div className="lg:hidden m-2  flex flex-col gap-5 ">
+        <button
+          className="p-2 bg-[#ed1450] rounded-md  text-white w-full font-bold"
+          onClick={toggleMobileForm}
+        >
+          {isMobileFormVisible ? "Hide Form" : "Upload Image"}
+        </button>
+
+        {isMobileFormVisible && (
+          <div className="mt-2 p-2 border-2 border-gray-400 rounded-lg shadow-lg">
+            <div className="flex items-center justify-center w-full">
+              <label
+                htmlFor="dropzone-file-mobile"
+                className="flex flex-col items-center justify-center w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-300  "
+              >
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  <svg
+                    className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 16"
                   >
-                    Description
-                  </label>
-                  <input
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                    id="description"
-                    type="text"
-                    value={testimonialData.description}
-                    onChange={(e) =>
-                      setTestimonialData({ ...testimonialData, description: e.target.value })
-                    }
-                    placeholder="Enter Description"
-                  />
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                    />
+                  </svg>
+                  <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                    <span className="font-semibold">Click to upload</span> or
+                    drag and drop
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    SVG, PNG, JPG or GIF (MAX. 800x400px)
+                  </p>
                 </div>
-                <div className="mb-6">
-                  <label
-                    htmlFor="testimonialImage"
-                    className="block text-gray-700 text-sm font-bold mb-2"
-                  >
-                    Image
-                  </label>
-                  <input
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                    id="testimonialImage"
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) =>
-                      setTestimonialData({ ...testimonialData, image: e.target.files[0] })
-                    }
+                <input
+                  id="dropzone-file-mobile"
+                  type="file"
+                  className="hidden"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                />
+              </label>
+            </div>
+            <input
+              type="text"
+              placeholder="Enter name"
+              value={name}
+              onChange={handleNameChange}
+              className="mt-2 p-2 border rounded-lg w-full"
+            />
+            <input
+              type="text"
+              placeholder="Enter description"
+              value={description}
+              onChange={handleDescriptionChange}
+              className="mt-2 p-2 border rounded-lg w-full"
+            />
+
+            <button
+              className="w-full text-white  bg-[#ed1450] hover:bg-primary-700   font-medium  text-md rounded-md px-5 py-2.5 text-center"
+              onClick={handleUpload}
+            >
+              Upload
+            </button>
+          </div>
+        )}
+
+        <div className=" lg:flex  lg:flex-col lg:items-end lg:mt-5  lg:p-5 lg:border-2 lg:border-gray-400 lg:rounded-lg lg:shadow-lg">
+          <div className="flex flex-col gap-5">
+            {testimonial &&
+              testimonial.map(({ id, image, name, description }) => (
+                <div className="relative flex h-28 lg:flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:bg-gray-100 overflow-hidden">
+                  <img
+                    className="object-cover  rounded-full  h-20 w-20 md:rounded-none md:rounded-s-lg bg-yellow-400"
+                    src={`http://localhost:8000${image}`}
+                    alt=""
                   />
-                </div>
-                <div className="flex items-center justify-between">
+                  <div className="flex flex-col justify-between p-4 leading-normal overflow-hidden">
+                    <h5 className="text-md font-bold tracking-tight text-gray-900 ">
+                      {name}
+                    </h5>
+                    <p className="mb-3 font-normal text-gray-700 dark:text-gray-600 overflow-hidden  whitespace-nowrap text-ellipsis md:whitespace-normal">
+                      {description}
+                    </p>
+                  </div>
                   <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                    type="submit"
+                    onClick={() => handleDelete(id)}
+                    className="absolute top-2 right-2 bg-[#ed1450] text-white p-1 rounded-full"
                   >
-                    Submit
+                    <RxCross1 size={25} className="p-1" />
                   </button>
                 </div>
-              </form>
-            </div>
+              ))}
           </div>
         </div>
       </div>

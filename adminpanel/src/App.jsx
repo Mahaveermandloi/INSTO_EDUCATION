@@ -55,10 +55,10 @@ const App = () => {
                     <Route path="/banner" element={<Banner />} />
                     <Route path="/school" element={<School />} />
                     <Route path="/newsnblogs" element={<NewsnBlogs />} />
-                    <Route path="/testimonials" element={<Testimonials />} />
                     <Route path="/student" element={<Student />} />
                     <Route path="/content" element={<Content />} />
 
+                    <Route path="/testimonials" element={<Testimonials />} />
                     <Route path="/image" element={<Image />} />
                     <Route path="video" element={<Video />} />
                     <Route path="pdf" element={<Pdf />} />
@@ -70,10 +70,6 @@ const App = () => {
                       path="/updatepassword"
                       element={<UpdatePassword />}
                     />
-
-
-
-                    
                   </Routes>
                 </main>
               </div>
