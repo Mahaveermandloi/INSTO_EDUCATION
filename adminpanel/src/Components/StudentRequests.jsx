@@ -4,7 +4,7 @@ import { ToastContainer, Bounce, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaInfoCircle } from "react-icons/fa";
 
-const School = () => {
+const StudentRequests = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSchool, setSelectedSchool] = useState(null);
   const [schoolData, setSchoolData] = useState([]);
@@ -398,4 +398,4 @@ const School = () => {
   );
 };
 
-export default School;
+export default StudentRequests;

@@ -7,31 +7,51 @@ import thumbnail from "../../../public/pdf.png";
 
 const Pdf = () => {
   const [data, setData] = useState([]);
-  const [selectedOption, setSelectedOption] = useState("paid");
   const [selectedFile, setSelectedFile] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  
   const [resourceURL, setResourceURL] = useState("");
-  const [thumbnailURL, setThumbnailURL] = useState("");
   const [isMobileFormVisible, setIsMobileFormVisible] = useState(false);
-  const [disable, setDisable] = useState(true);
+  
+  
+  const [selectedOption, setSelectedOption] = useState("all");
 
-  const fetchdata = async () => {
+  const handleAll = () => {
+    setSelectedOption("all")
+    fetchdata();
+  };
+
+  const handleFreeButtonClick = () => {
+    setSelectedOption("free");
+    fetchdata("free");
+  };
+
+  const handlePaidButtonClick = () => {
+    setSelectedOption("paid");
+    fetchdata("paid");
+  };
+
+  const fetchdata = async (option) => {
     try {
       const accessToken = localStorage.getItem("accessToken");
       if (accessToken) {
         const response = await axios.get(
           "http://localhost:8000/api/v1/resource/get-all-resources"
         );
-
-        // Filter only PDF resources
         const pdfResources = response.data.data.resourcesData.filter(
           (resource) => resource.resource_type === "pdf"
         );
 
-        setData(pdfResources);
-        console.log(pdfResources);
+        let filteredData;
+        if (option === "free") {
+          filteredData = pdfResources.filter((item) => !item.is_paid);
+        } else if (option === "paid") {
+          filteredData = pdfResources.filter((item) => item.is_paid);
+        } else {
+          filteredData = pdfResources;
+        }
+
+        setData(filteredData);
       } else {
         console.error("No access token found");
       }
@@ -64,34 +84,17 @@ const Pdf = () => {
   };
 
   const handleUpload = async (event) => {
-    event.preventDefault(); // Prevent default form submission behavior
+    event.preventDefault();
 
     if (selectedFile && title && description) {
       const formData = new FormData();
       formData.append("pdf", selectedFile);
       formData.append("title", title);
       formData.append("description", description);
-    
+
       formData.append("resource_url", resourceURL);
       formData.append("resource_type", "pdf");
       formData.append("is_paid", selectedOption === "paid");
-
-      console.log(
-        "Appending to formData:",
-        "PDF:",
-        selectedFile,
-        "Title:",
-        title,
-        "Description:",
-        description,
-   
-        "Resource URL:",
-        resourceURL,
-        "Resource Type:",
-        "pdf",
-        "Is Paid:",
-        selectedOption === "paid"
-      );
 
       try {
         const accessToken = localStorage.getItem("accessToken");
@@ -105,7 +108,6 @@ const Pdf = () => {
             },
           }
         );
-
 
         if (response.status === 200) {
           toast.success("PDF uploaded successfully!", {
@@ -122,7 +124,7 @@ const Pdf = () => {
           setSelectedFile(null);
           setTitle("");
           setDescription("");
-         
+
           setResourceURL("");
 
           window.location.reload();
@@ -182,31 +184,18 @@ const Pdf = () => {
           setData((prevdata) => prevdata.filter((item) => item.id !== id));
         }
       } catch (error) {
-        if (response.status === 403) {
-          toast.error("No resource with this id", {
-            position: "top-center",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-
-          console.error("Error deleting PDF:", error);
-          toast.error("Error deleting PDF", {
-            position: "top-center",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-            transition: Bounce,
-          });
-        }
+        console.error("Error deleting PDF:", error);
+        toast.error("Error deleting PDF", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
       }
     }
   };
@@ -231,8 +220,38 @@ const Pdf = () => {
         transition={Bounce}
       />
       <div className="lg:w-10/12 lg:ml-auto">
-        <div>
-          <h1 className="text-2xl lg:text-4xl font-bold">PDF</h1>
+        <div className="flex justify-between items-center  ">
+          <div>
+            <h1 className="text-2xl lg:text-4xl font-bold">PDF</h1>
+          </div>
+
+          <div className="flex justify-center gap-2">
+            <button
+              onClick={handleAll}
+              className={`p-2 rounded-md w-1/2 font-bold ${
+                selectedOption === "all" ? "bg-green-500" : "bg-slate-200"
+              }`}
+            >
+              All
+            </button>
+            <button
+              onClick={handleFreeButtonClick}
+              className={`p-2 rounded-md w-1/2 font-bold ${
+                selectedOption === "free" ? "bg-green-500" : "bg-slate-200"
+              }`}
+            >
+              Free
+            </button>
+
+            <button
+              onClick={handlePaidButtonClick}
+              className={`p-2 rounded-md w-1/2 font-bold ${
+                selectedOption === "paid" ? "bg-green-500" : "bg-slate-200"
+              }`}
+            >
+              Paid
+            </button>
+          </div>
         </div>
 
         <div className="hidden lg:flex justify-around lg:gap-4">
@@ -331,7 +350,7 @@ const Pdf = () => {
                 onChange={(e) => setDescription(e.target.value)}
                 className="border p-2 rounded w-full mb-4"
               />
-            
+
               <select
                 id="resource_type"
                 name="resource_type"
@@ -435,7 +454,7 @@ const Pdf = () => {
                   onChange={(e) => setDescription(e.target.value)}
                   className="border p-2 rounded w-full mb-4"
                 />
-              
+
                 <select
                   id="resource_type-mobile"
                   name="resource_type"

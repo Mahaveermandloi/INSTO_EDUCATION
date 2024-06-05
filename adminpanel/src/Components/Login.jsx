@@ -53,13 +53,9 @@ const Login = () => {
           theme: "light",
         });
 
-        navigate("/dashboard");
-
         setTimeout(() => {
-          window.location.reload()
-          
+          navigate("/dashboard");
         }, 2000);
-
       }
     } catch (error) {
       if (error.response && error.response.status === 404) {

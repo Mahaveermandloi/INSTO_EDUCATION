@@ -5,49 +5,56 @@ import { ToastContainer, Bounce, toast } from "react-toastify";
 
 const Image = () => {
   const [data, setData] = useState([]);
-  const [selectedOption, setSelectedOption] = useState("paid");
+
   const [selectedFile, setSelectedFile] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
   const [resourceURL, setResourceURL] = useState("");
-  // const [thumbnailURL, setThumbnailURL] = useState("");
+
   const [isMobileFormVisible, setIsMobileFormVisible] = useState(false);
 
   const [disable, setDisable] = useState(true);
 
-  // const fetchdata = async () => {
-  //   try {
-  //     const accessToken = localStorage.getItem("accessToken");
-  //     if (accessToken) {
-  //       const response = await axios.get(
-  //         "http://localhost:8000/api/v1/resource/get-all-resources"
-  //       );
-  //       setData(response.data.data.resourcesData);
-  //       console.log(response.data.data.resourcesData);
-  //     } else {
-  //       console.error("No access token found");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
+  const [selectedOption, setSelectedOption] = useState("all");
+  
 
-  const fetchdata = async () => {
+  const handleAll = () => {
+    setSelectedOption("all");
+    fetchdata();
+  };
+
+  const handleFreeButtonClick = () => {
+    setSelectedOption("free");
+    fetchdata("free");
+  };
+
+  const handlePaidButtonClick = () => {
+    setSelectedOption("paid");
+    fetchdata("paid");
+  };
+
+  const fetchdata = async (option) => {
     try {
       const accessToken = localStorage.getItem("accessToken");
       if (accessToken) {
         const response = await axios.get(
           "http://localhost:8000/api/v1/resource/get-all-resources"
         );
-
-        // Filter only PDF resources
         const imageResources = response.data.data.resourcesData.filter(
           (resource) => resource.resource_type === "image"
         );
 
-        setData(imageResources);
-        console.log(imageResources);
+        let filteredData;
+        if (option === "free") {
+          filteredData = imageResources.filter((item) => !item.is_paid);
+        } else if (option === "paid") {
+          filteredData = imageResources.filter((item) => item.is_paid);
+        } else {
+          filteredData = imageResources;
+        }
+
+        setData(filteredData);
       } else {
         console.error("No access token found");
       }
@@ -59,7 +66,6 @@ const Image = () => {
   useEffect(() => {
     fetchdata();
   }, []);
-
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file && file.type.startsWith("image/")) {
@@ -82,12 +88,12 @@ const Image = () => {
   const handleUpload = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
 
-    if (selectedFile && title && description ) {
+    if (selectedFile && title && description) {
       const formData = new FormData();
       formData.append("image", selectedFile);
       formData.append("title", title);
       formData.append("description", description);
-     
+
       formData.append("resource_url", resourceURL);
 
       formData.append("resource_type", "image"); // Assuming image is always selected
@@ -123,7 +129,7 @@ const Image = () => {
           setSelectedFile(null);
           setTitle("");
           setDescription("");
-        
+
           setResourceURL("");
 
           window.location.reload();
@@ -231,27 +237,54 @@ const Image = () => {
         theme="light"
         transition={Bounce}
       />
-      <div className="lg:w-10/12 lg:ml-auto">
-        <div>
-          <h1 className="text-2xl lg:text-4xl font-bold">Images</h1>
+      <div className="lg:w-10/12 lg:ml-auto ">
+        <div className="flex justify-between items-center  ">
+          <div>
+            <h1 className="text-2xl lg:text-4xl font-bold">Images</h1>
+          </div>
+
+          <div className="flex justify-center gap-2">
+            <button
+              onClick={handleAll}
+              className={`p-2 rounded-md w-1/2 font-bold ${
+                selectedOption === "all" ? "bg-green-500" : "bg-slate-200"
+              }`}
+            >
+              All
+            </button>
+            <button
+              onClick={handleFreeButtonClick}
+              className={`p-2 rounded-md w-1/2 font-bold ${
+                selectedOption === "free" ? "bg-green-500" : "bg-slate-200"
+              }`}
+            >
+              Free
+            </button>
+            <button
+              onClick={handlePaidButtonClick}
+              className={`p-2 rounded-md w-1/2 font-bold ${
+                selectedOption === "paid" ? "bg-green-500" : "bg-slate-200"
+              }`}
+            >
+              Paid
+            </button>
+          </div>
         </div>
 
         <div className="hidden lg:flex justify-around lg:gap-4">
           {/* Form for desktop view */}
           <div className="hidden lg:w-1/2 lg:flex lg:flex-col lg:items-end lg:mt-5 lg:p-5 lg:border-2 lg:border-gray-400 lg:rounded-lg lg:shadow-lg">
             {/* data display */}
-           
-           
+
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {data &&
-                data.map(({ id, resource_url }) => {
+                data.map(({ id, resource_url, is_paid }) => {
                   return (
                     <>
                       <div key={id} className="relative">
                         <img
                           className="h-auto max-w-full rounded-lg"
                           src={`http://localhost:8000${resource_url}`}
-
                           alt={`data image ${id}`}
                         />
 
@@ -266,8 +299,6 @@ const Image = () => {
                   );
                 })}
             </div>
-
-
           </div>
 
           {/* Form for both desktop and mobile view */}
@@ -336,7 +367,7 @@ const Image = () => {
               className="mt-2 p-2 border rounded-lg w-full"
               required
             />
-          
+
             <input
               type="text"
               placeholder="Resource URL"
@@ -344,15 +375,7 @@ const Image = () => {
               onChange={(e) => setResourceURL(e.target.value)}
               className="mt-2 p-2 border rounded-lg w-full"
             />
-            {/* <input
-              type="text"
-              placeholder="Thumbnail URL (Optional)"
-              value={thumbnailURL}
-              onChange={(e) => setThumbnailURL(e.target.value)}
-              className="mt-2 p-2 border rounded-lg w-full"
-            /> */}
 
-            {/* Submit button */}
             {disable && (
               <button
                 className="mt-4 p-2 bg-[#ed1456] text-white rounded-md w-full font-bold"
@@ -381,14 +404,14 @@ const Image = () => {
                 {/* data display */}
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {data &&
-                    data.map(({ id, resource_url }) => (
+                    data.map(({ id, resource_url, is_paid }) => (
                       <div key={id} className="relative">
                         <img
                           className="h-auto max-w-full rounded-lg"
                           src={`http://localhost:8000${resource_url}`}
                           alt={`data image ${id}`}
                         />
-                       
+
                         <button
                           onClick={() => handleDelete(id)}
                           className="absolute top-2 right-2 bg-[#ed1450] text-white p-1 rounded-full"
@@ -466,7 +489,7 @@ const Image = () => {
                   className="mt-2 p-2 border rounded-lg w-full"
                   required
                 />
-               
+
                 <input
                   type="text"
                   placeholder="Resource URL"

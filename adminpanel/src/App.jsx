@@ -6,7 +6,7 @@ import Dashboard from "./Components/Dashboard";
 import Gallery from "./Components/Gallery";
 import Banner from "./Components/Banner";
 import School from "./Components/School";
-import NewsnBlogs from "./Components/NewsnBlogs";
+import NewsnBlogs from "./Components/NewsandUpdates";
 import Testimonials from "./Components/Testimonials";
 import Student from "./Components/Student";
 import Content from "./Components/Content";
@@ -20,6 +20,10 @@ import Image from "./Components/Resources/Image";
 import Video from "./Components/Resources/Video";
 import Pdf from "./Components/Resources/Pdf";
 import UpdatePassword from "./Components/UpdatePassword";
+import NewsandUpdates from "./Components/NewsandUpdates";
+import Blog from "./Components/Blogs";
+import Editor from "./Components/Editor";
+import StudentRequests from "./Components/StudentRequests";
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -35,6 +39,7 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
+
         <Route path="/login" element={<Login />} />
         <Route path="/forgetpassword" element={<ForgetPassword />} />
         <Route path="/otppage/:email" element={<OtpPage />} />
@@ -52,11 +57,23 @@ const App = () => {
                     <Route path="/" element={<Dashboard />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/gallery" element={<Gallery />} />
+
                     <Route path="/banner" element={<Banner />} />
+
                     <Route path="/school" element={<School />} />
-                    <Route path="/newsnblogs" element={<NewsnBlogs />} />
+                   
+                    <Route
+                      path="/studentrequest"
+                      element={<StudentRequests />}
+                    />
+                    
+                    <Route
+                      path="/newsandupdates"
+                      element={<NewsandUpdates />}
+                    />
                     <Route path="/student" element={<Student />} />
                     <Route path="/content" element={<Content />} />
+                    <Route path="/blog" element={<Blog />} />
 
                     <Route path="/testimonials" element={<Testimonials />} />
                     <Route path="/image" element={<Image />} />

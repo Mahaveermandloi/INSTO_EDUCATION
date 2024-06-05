@@ -27,6 +27,8 @@ const Content = () => {
           setVideoData(response.data.data.videos);
           setPdfData(response.data.data.pdfs);
 
+          
+
           console.log("Image Data:", response.data.data.images);
           console.log("Video Data:", response.data.data.videos);
           console.log("PDF Data:", response.data.data.pdfs);
