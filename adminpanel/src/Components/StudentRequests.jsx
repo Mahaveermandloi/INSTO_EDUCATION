@@ -14,7 +14,7 @@ const StudentRequests = () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.get(
-          "http://192.168.232.62:8000/api/v1/school/getSchoolData",
+          "http://localhost:8000/api/v1/school/getSchoolData",
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -46,7 +46,7 @@ const StudentRequests = () => {
     try {
       const accessToken = localStorage.getItem("accessToken");
       const response = await axios.put(
-        `http://192.168.232.62:8000/api/v1/school/approveSchool/${selectedSchool.school_id}`,
+        `http://localhost:8000/api/v1/school/approveSchool/${selectedSchool.school_id}`,
         {},
         {
           headers: {
@@ -79,7 +79,7 @@ const StudentRequests = () => {
     try {
       const accessToken = localStorage.getItem("accessToken");
       const response = await axios.put(
-        `http://192.168.232.62:8000/api/v1/school/rejectSchool/${selectedSchool.school_id}`,
+        `http://localhost:8000/api/v1/school/rejectSchool/${selectedSchool.school_id}`,
         {},
         {
           headers: {

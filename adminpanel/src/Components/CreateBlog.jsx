@@ -1,12 +1,11 @@
-// Blog.js
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { RxCross1 } from "react-icons/rx";
-import Editor from "../Components/Editor";
+import Editor from "./Editor";
 import { ToastContainer, Bounce, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
-const Blog = () => {
+const CreateBlog = () => {
   const [gallery, setGallery] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [title, setTitle] = useState("");
@@ -14,6 +13,7 @@ const Blog = () => {
   const [permalink, setPermalink] = useState("");
   const [description, setDescription] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const fetchGallery = async () => {
     try {
@@ -80,6 +80,7 @@ const Blog = () => {
             },
           }
         );
+
         if (response.status === 200) {
           toast.success("Blog uploaded successfully!", {
             position: "top-center",
@@ -96,10 +97,12 @@ const Blog = () => {
           setTitle("");
           setDescription("");
           setPermalink("");
+          setPostedBy("");
 
           setTimeout(() => {
-            window.location.reload();
-          }, 2000);
+            navigate("/blog");
+          }, 1000);
+          
         }
       } catch (error) {
         console.error("Error uploading image:", error);
@@ -126,50 +129,6 @@ const Blog = () => {
         progress: undefined,
         theme: "light",
       });
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this image?")) {
-      try {
-        const accessToken = localStorage.getItem("accessToken");
-        const response = await axios.delete(
-          `http://localhost:8000/api/v1/blogs/delete-blogs/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-        if (response.status === 200) {
-          toast.success("BLOG successfully deleted", {
-            position: "top-center",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-          setGallery((prevGallery) =>
-            prevGallery.filter((item) => item.id !== id)
-          );
-        }
-      } catch (error) {
-        console.error("Error deleting image:", error);
-        toast.error("Error deleting image", {
-          position: "top-center",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          transition: Bounce,
-        });
-      }
     }
   };
 
@@ -298,4 +257,4 @@ const Blog = () => {
   );
 };
 
-export default Blog;
+export default CreateBlog;

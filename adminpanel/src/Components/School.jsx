@@ -14,7 +14,7 @@ const School = () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.get(
-          "http://192.168.232.62:8000/api/v1/school/getSchoolData",
+          "http://localhost:8000/api/v1/school/getSchoolData",
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -46,7 +46,7 @@ const School = () => {
     try {
       const accessToken = localStorage.getItem("accessToken");
       const response = await axios.put(
-        `http://192.168.232.62:8000/api/v1/school/approveSchool/${selectedSchool.school_id}`,
+        `http://localhost:8000/api/v1/school/approveSchool/${selectedSchool.school_id}`,
         {},
         {
           headers: {
@@ -79,7 +79,7 @@ const School = () => {
     try {
       const accessToken = localStorage.getItem("accessToken");
       const response = await axios.put(
-        `http://192.168.232.62:8000/api/v1/school/rejectSchool/${selectedSchool.school_id}`,
+        `http://localhost:8000/api/v1/school/rejectSchool/${selectedSchool.school_id}`,
         {},
         {
           headers: {
@@ -233,9 +233,7 @@ const School = () => {
               <table className="min-w-full">
                 <thead className="bg-gray-100 border-b">
                   <tr>
-                    <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      S.No
-                    </th>
+                   
                     <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Field
                     </th>
@@ -246,9 +244,7 @@ const School = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   <tr>
-                    <td className="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
-                      1
-                    </td>
+                   
                     <td className="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
                       Email
                     </td>
@@ -257,9 +253,7 @@ const School = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
-                      2
-                    </td>
+                   
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
                       City
                     </td>
@@ -268,9 +262,7 @@ const School = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
-                      3
-                    </td>
+                   
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
                       State
                     </td>
@@ -279,9 +271,7 @@ const School = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
-                      4
-                    </td>
+                 
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
                       Mobile Number
                     </td>
@@ -290,9 +280,7 @@ const School = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
-                      5
-                    </td>
+                   
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
                       Status
                     </td>
@@ -301,9 +289,7 @@ const School = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
-                      6
-                    </td>
+                  
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
                       Landline
                     </td>
@@ -312,9 +298,7 @@ const School = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
-                      7
-                    </td>
+                    
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
                       District
                     </td>
@@ -323,9 +307,7 @@ const School = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
-                      8
-                    </td>
+                  
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
                       STD Code
                     </td>
@@ -334,9 +316,7 @@ const School = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
-                      9
-                    </td>
+                    
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
                       Pincode
                     </td>
@@ -345,9 +325,7 @@ const School = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
-                      10
-                    </td>
+                   
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
                       Principal
                     </td>
@@ -357,9 +335,7 @@ const School = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
-                      11
-                    </td>
+                    
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
                       Syllabus
                     </td>
