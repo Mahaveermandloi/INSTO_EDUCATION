@@ -12,46 +12,52 @@ const Pdf = () => {
   const [description, setDescription] = useState("");
   const [resourceURL, setResourceURL] = useState("");
   const [isMobileFormVisible, setIsMobileFormVisible] = useState(false);
-  
-  
+  const [filter, setFilter] = useState(false);
+  const [resource_class, setClass] = useState(true);
+
   const [selectedOption, setSelectedOption] = useState("all");
 
-  const handleAll = () => {
-    setSelectedOption("all")
-    fetchdata();
+  const handleClassChange = (event) => {
+    const which_class = parseInt(event.target.value, 10); // Convert to integer
+    setClass(which_class);
+    fetchdata(selectedOption, which_class); // Pass the selected option and class
   };
 
-  const handleFreeButtonClick = () => {
-    setSelectedOption("free");
-    fetchdata("free");
-  };
-
-  const handlePaidButtonClick = () => {
-    setSelectedOption("paid");
-    fetchdata("paid");
-  };
-
-  const fetchdata = async (option) => {
+  const fetchdata = async (option = "all", which_class = null) => {
     try {
       const accessToken = localStorage.getItem("accessToken");
       if (accessToken) {
         const response = await axios.get(
-          "http://localhost:8000/api/v1/resource/get-all-resources"
+          "http://localhost:8000/api/v1/resource/get-all-resources",
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
         );
         const pdfResources = response.data.data.resourcesData.filter(
           (resource) => resource.resource_type === "pdf"
         );
 
-        let filteredData;
+        let filteredData = pdfResources;
+
+        // Apply type-based filtering
         if (option === "free") {
-          filteredData = pdfResources.filter((item) => !item.is_paid);
+          filteredData = filteredData.filter((item) => !item.is_paid);
         } else if (option === "paid") {
-          filteredData = pdfResources.filter((item) => item.is_paid);
-        } else {
-          filteredData = pdfResources;
+          filteredData = filteredData.filter((item) => item.is_paid);
+        }
+
+        // Apply class-based filtering
+        if (which_class !== null && !isNaN(which_class)) {
+          filteredData = filteredData.filter(
+            (item) => item.resource_class === which_class
+          );
         }
 
         setData(filteredData);
+
+        console.log(filteredData);
       } else {
         console.error("No access token found");
       }
@@ -63,6 +69,23 @@ const Pdf = () => {
   useEffect(() => {
     fetchdata();
   }, []);
+
+  // Event handlers for free and paid buttons
+  const handleFreeButtonClick = () => {
+    setSelectedOption("free");
+    fetchdata("free", resource_class);
+  };
+
+  const handlePaidButtonClick = () => {
+    setSelectedOption("paid");
+    fetchdata("paid", resource_class);
+  };
+
+  // Event handler for "All" button
+  const handleAll = () => {
+    setSelectedOption("all");
+    fetchdata("all", resource_class);
+  };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -93,6 +116,7 @@ const Pdf = () => {
       formData.append("description", description);
 
       formData.append("resource_url", resourceURL);
+      formData.append("resource_class", resource_class);
       formData.append("resource_type", "pdf");
       formData.append("is_paid", selectedOption === "paid");
 
@@ -220,12 +244,53 @@ const Pdf = () => {
         transition={Bounce}
       />
       <div className="lg:w-10/12 lg:ml-auto">
-        <div className="flex justify-between items-center  ">
-          <div>
-            <h1 className="text-2xl lg:text-4xl font-bold">PDF</h1>
+        <div className=" lg:flex justify-between items-center  ">
+          <div className="flex justify-between">
+            <div>
+              <h1 className="text-2xl lg:text-4xl font-bold">PDF</h1>
+            </div>
           </div>
 
-          <div className="flex justify-center gap-2">
+          <div className="hidden  mt-2 lg:flex justify-center gap-2 ">
+            <div className="lg:w-96 ">
+              <select
+                id="countries"
+                className="bg-gray-50 border text-center border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500  block w-full p-2.5 dark:bg-gray-200 "
+                onChange={handleClassChange}
+              >
+                <option selected>Choose a class</option>
+                <option value="1" className="text-center ">
+                  1
+                </option>
+                <option value="2" className="text-center ">
+                  2
+                </option>
+                <option value="3" className="text-center ">
+                  3
+                </option>
+                <option value="4" className="text-center ">
+                  4
+                </option>
+                <option value="5" className="text-center ">
+                  5
+                </option>
+                <option value="6" className="text-center ">
+                  6
+                </option>
+                <option value="7" className="text-center ">
+                  7
+                </option>
+                <option value="8" className="text-center ">
+                  8
+                </option>
+                <option value="9" className="text-center ">
+                  9
+                </option>
+                <option value="10" className="text-center ">
+                  10
+                </option>
+              </select>
+            </div>
             <button
               onClick={handleAll}
               className={`p-2 rounded-md w-1/2 font-bold ${
@@ -242,7 +307,6 @@ const Pdf = () => {
             >
               Free
             </button>
-
             <button
               onClick={handlePaidButtonClick}
               className={`p-2 rounded-md w-1/2 font-bold ${
@@ -260,7 +324,7 @@ const Pdf = () => {
             {/* data display */}
             <div className="grid grid-cols-2  md:grid-cols-3 gap-2 ">
               {data &&
-                data.map(({ id, resource_url, title }) => {
+                data.map(({ id, title }) => {
                   return (
                     <>
                       <div key={id} className="relative bg-gray-200">
@@ -293,35 +357,43 @@ const Pdf = () => {
                 className="flex flex-col items-center justify-center w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-100 "
               >
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <svg
-                    className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 20 16"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0-.8 7.925"
-                    />
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M10 12v4m0 0l-3-3m3 3 3-3"
-                    />
-                  </svg>
-                  <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                    <span className="font-semibold">Click to upload</span> or
-                    drag and drop
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    PDF (MAX. 800x400px)
-                  </p>
+                  {selectedFile ? (
+                    <div className="flex flex-col justify-center mb-4">
+                      <img
+                        className="rounded-lg w-20 h-20"
+                        src={thumbnail}
+                        alt="Preview"
+                      />
+                      <p className="mt-2 text-sm text-gray-500">
+                        {selectedFile.name}
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      <svg
+                        className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 20 16"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                        />
+                      </svg>
+                      <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                        <span className="font-semibold">Click to upload</span>{" "}
+                        or drag and drop
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        SVG, PNG, JPG or GIF (MAX. 800x400px)
+                      </p>
+                    </>
+                  )}
                 </div>
                 <input
                   id="dropzone-file"
@@ -361,6 +433,24 @@ const Pdf = () => {
                 <option value="paid">Paid</option>
                 <option value="free">Free</option>
               </select>
+
+              <select
+                value={resource_class}
+                onChange={(e) => setClass(e.target.value)}
+                className=" mb-2 p-2 border rounded-lg w-full"
+              >
+                <option value="">Select the class</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+              </select>
               <input
                 type="text"
                 id="resourceURL"
@@ -382,111 +472,239 @@ const Pdf = () => {
 
         <div className="lg:hidden flex flex-col gap-2 ">
           {/* Form for mobile view */}
-          <button
-            className="mt-4 p-2 bg-[#ed1450] text-white rounded w-full"
-            onClick={toggleMobileForm}
-          >
-            {isMobileFormVisible ? "Hide Upload Form" : "Show Upload Form"}
-          </button>
+
+          <div className="flex">
+            <button
+              className="p-2 bg-[#ed1450] rounded-md text-white w-full font-bold"
+              onClick={() => setFilter(!filter)}
+            >
+              {filter ? "Hide Filter" : "Open filter"}
+            </button>
+
+            <button
+              className="p-2 bg-[#ed1450] rounded-md text-white w-full font-bold"
+              onClick={toggleMobileForm}
+            >
+              {isMobileFormVisible ? "Hide Form" : "Upload PDF"}
+            </button>
+          </div>
+
+          {filter && (
+            <div className=" mt-2 lg:flex justify-center gap-2 ">
+              <div className="lg:w-96 ">
+                <select
+                  id="countries"
+                  className="bg-gray-50 border text-center border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500  block w-full p-2.5 dark:bg-gray-200 "
+                  onChange={handleClassChange}
+                >
+                  <option selected>Choose a class</option>
+                  <option value="1" className="text-center ">
+                    1
+                  </option>
+                  <option value="2" className="text-center ">
+                    2
+                  </option>
+                  <option value="3" className="text-center ">
+                    3
+                  </option>
+                  <option value="4" className="text-center ">
+                    4
+                  </option>
+                  <option value="5" className="text-center ">
+                    5
+                  </option>
+                  <option value="6" className="text-center ">
+                    6
+                  </option>
+                  <option value="7" className="text-center ">
+                    7
+                  </option>
+                  <option value="8" className="text-center ">
+                    8
+                  </option>
+                  <option value="9" className="text-center ">
+                    9
+                  </option>
+                  <option value="10" className="text-center ">
+                    10
+                  </option>
+                </select>
+              </div>
+              <button
+                onClick={handleAll}
+                className={`p-2 rounded-md w-1/2 font-bold ${
+                  selectedOption === "all" ? "bg-green-500" : "bg-slate-200"
+                }`}
+              >
+                All
+              </button>
+              <button
+                onClick={handleFreeButtonClick}
+                className={`p-2 rounded-md w-1/2 font-bold ${
+                  selectedOption === "free" ? "bg-green-500" : "bg-slate-200"
+                }`}
+              >
+                Free
+              </button>
+              <button
+                onClick={handlePaidButtonClick}
+                className={`p-2 rounded-md w-1/2 font-bold ${
+                  selectedOption === "paid" ? "bg-green-500" : "bg-slate-200"
+                }`}
+              >
+                Paid
+              </button>
+            </div>
+          )}
 
           {isMobileFormVisible && (
-            <div className="w-full flex flex-col items-center mt-5 p-5 border-2 border-gray-400 rounded-lg shadow-lg">
-              <div className="flex items-center justify-center w-full">
-                <label
-                  htmlFor="dropzone-file-mobile"
-                  className="flex flex-col items-center justify-center w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-100 "
-                >
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <svg
-                      className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 16"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0-.8 7.925"
-                      />
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M10 12v4m0 0l-3-3m3 3 3-3"
-                      />
-                    </svg>
-                    <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                      <span className="font-semibold">Click to upload</span> or
-                      drag and drop
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      PDF (MAX. 800x400px)
-                    </p>
-                  </div>
-                  <input
-                    id="dropzone-file-mobile"
-                    type="file"
-                    className="hidden"
-                    onChange={handleFileChange}
-                    accept="application/pdf"
-                  />
-                </label>
+            <div className="flex justify-around lg:gap-4">
+              {/* Form for desktop view */}
+              <div className="hidden lg:w-1/2 lg:flex lg:flex-col lg:items-end lg:mt-5 lg:p-5 lg:border-2 lg:border-gray-400 lg:rounded-lg lg:shadow-lg">
+                {/* data display */}
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {data &&
+                    data.map(({ id, resource_url, is_paid }) => (
+                      <div key={id} className="relative">
+                        <img
+                          className="h-auto max-w-full rounded-lg"
+                          src={`http://localhost:8000${resource_url}`}
+                          alt={`data pdf ${id}`}
+                        />
+
+                        <button
+                          onClick={() => handleDelete(id)}
+                          className="absolute top-2 right-2 bg-[#ed1450] text-white p-1 rounded-full"
+                        >
+                          <RxCross1 size={30} className="p-1" />
+                        </button>
+                      </div>
+                    ))}
+                </div>
               </div>
-              <form onSubmit={handleUpload} className="w-full mt-4">
+
+              {/* Form for both desktop and mobile view */}
+              <div className="w-full lg:w-1/2 flex flex-col items-center mt-5 p-5 border-2 border-gray-400 rounded-lg shadow-lg">
+                <div className="flex items-center justify-center w-full">
+                  <label
+                    htmlFor="dropzone-file"
+                    className="flex flex-col items-center justify-center w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-100 "
+                  >
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      {selectedFile ? (
+                        <div className="flex justify-center mb-4">
+                          <img
+                            className="rounded-lg"
+                            src={URL.createObjectURL(selectedFile)}
+                            alt="Preview"
+                          />
+                        </div>
+                      ) : (
+                        <>
+                          <svg
+                            className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 20 16"
+                          >
+                            <path
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                            />
+                          </svg>
+                          <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                            <span className="font-semibold">
+                              Click to upload
+                            </span>{" "}
+                            or drag and drop
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            SVG, PNG, JPG or GIF (MAX. 800x400px)
+                          </p>
+                        </>
+                      )}
+                    </div>
+                    <input
+                      id="dropzone-file"
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                    />
+                  </label>
+                </div>
+
+                {/* Form fields */}
                 <input
                   type="text"
-                  id="title-mobile"
-                  name="title"
-                  placeholder="Enter Title"
+                  placeholder="Enter title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="border p-2 rounded w-full mb-4"
+                  className="mt-2 p-2 border rounded-lg w-full"
+                  required
                 />
-                <textarea
-                  id="description-mobile"
-                  name="description"
-                  placeholder="Enter Description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className="border p-2 rounded w-full mb-4"
-                />
-
                 <select
-                  id="resource_type-mobile"
-                  name="resource_type"
                   value={selectedOption}
                   onChange={(e) => setSelectedOption(e.target.value)}
-                  className="border p-2 rounded w-full mb-4"
+                  className="mt-2 p-2 border rounded-lg w-full"
                 >
-                  <option value="paid">Paid</option>
-                  <option value="free">Free</option>
+                  <option value="paid">PAID</option>
+                  <option value="free">FREE</option>
                 </select>
+
+                <select
+                  value={resource_class}
+                  onChange={(e) => setClass(e.target.value)}
+                  className="mt-2 p-2 border rounded-lg w-full"
+                >
+                  <option value="">Select the class</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                </select>
+
                 <input
                   type="text"
-                  id="resourceURL-mobile"
-                  name="resourceURL"
+                  placeholder="Enter description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="mt-2 p-2 border rounded-lg w-full"
+                  required
+                />
+
+                <input
+                  type="text"
                   placeholder="Resource URL"
                   value={resourceURL}
                   onChange={(e) => setResourceURL(e.target.value)}
-                  className="border p-2 rounded w-full mb-4"
+                  className="mt-2 p-2 border rounded-lg w-full"
                 />
+
+                {/* Submit button */}
                 <button
-                  type="submit"
-                  className="bg-[#ed1450] text-white p-2 rounded w-full"
+                  className="mt-4 p-2 bg-[#ed1456] text-white rounded-md w-full font-bold"
+                  onClick={handleUpload}
                 >
                   Upload
                 </button>
-              </form>
+              </div>
             </div>
           )}
 
           <div className="grid grid-cols-2  md:grid-cols-3 gap-2 ">
             {data &&
-              data.map(({ id, resource_url, title }) => {
+              data.map(({ id, title }) => {
                 return (
                   <>
                     <div key={id} className="relative bg-gray-200">

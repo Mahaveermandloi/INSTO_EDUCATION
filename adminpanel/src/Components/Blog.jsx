@@ -74,7 +74,7 @@ const Blog = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-4 mt-5 ">
+        <div className=" flex flex-col lg:grid lg:grid-cols-3  gap-4 mt-5 ">
           {gallery &&
             gallery.map(
               ({ id, image, description, createdAt, posted_By, title }) => {

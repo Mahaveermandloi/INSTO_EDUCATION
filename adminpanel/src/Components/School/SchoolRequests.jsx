@@ -4,7 +4,7 @@ import { ToastContainer, Bounce, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaInfoCircle } from "react-icons/fa";
 
-const StudentRequests = () => {
+const SchoolRequests = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSchool, setSelectedSchool] = useState(null);
   const [schoolData, setSchoolData] = useState([]);
@@ -199,15 +199,15 @@ const StudentRequests = () => {
 
                       <td className="px-6 py-4">
                         <span
-                          className={`bg-${
+                          className={` ${
                             status === "approved"
-                              ? "green"
+                              ? "bg-green-500"
                               : status === "rejected"
-                              ? "red"
-                              : "yellow"
-                          }-500 text-white px-2 py-1 rounded`}
+                              ? "bg-red-500"
+                              : "bg-yellow-500"
+                          } text-white px-2 py-1 rounded`}
                         >
-                          {status}
+                          {status || "pending"}
                         </span>
                       </td>
 
@@ -234,9 +234,6 @@ const StudentRequests = () => {
                 <thead className="bg-gray-100 border-b">
                   <tr>
                     <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      S.No
-                    </th>
-                    <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Field
                     </th>
                     <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -247,9 +244,6 @@ const StudentRequests = () => {
                 <tbody className="divide-y divide-gray-200">
                   <tr>
                     <td className="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
-                      1
-                    </td>
-                    <td className="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
                       Email
                     </td>
                     <td className="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
@@ -257,9 +251,6 @@ const StudentRequests = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
-                      2
-                    </td>
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
                       City
                     </td>
@@ -269,9 +260,6 @@ const StudentRequests = () => {
                   </tr>
                   <tr>
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
-                      3
-                    </td>
-                    <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
                       State
                     </td>
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
@@ -279,9 +267,6 @@ const StudentRequests = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
-                      4
-                    </td>
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
                       Mobile Number
                     </td>
@@ -291,9 +276,6 @@ const StudentRequests = () => {
                   </tr>
                   <tr>
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
-                      5
-                    </td>
-                    <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
                       Status
                     </td>
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
@@ -301,9 +283,6 @@ const StudentRequests = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
-                      6
-                    </td>
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
                       Landline
                     </td>
@@ -313,9 +292,6 @@ const StudentRequests = () => {
                   </tr>
                   <tr>
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
-                      7
-                    </td>
-                    <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
                       District
                     </td>
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
@@ -323,9 +299,6 @@ const StudentRequests = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
-                      8
-                    </td>
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
                       STD Code
                     </td>
@@ -335,9 +308,6 @@ const StudentRequests = () => {
                   </tr>
                   <tr>
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
-                      9
-                    </td>
-                    <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
                       Pincode
                     </td>
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
@@ -345,9 +315,6 @@ const StudentRequests = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
-                      10
-                    </td>
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
                       Principal
                     </td>
@@ -357,9 +324,6 @@ const StudentRequests = () => {
                     </td>
                   </tr>
                   <tr>
-                    <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
-                      11
-                    </td>
                     <td class="text-md  lg:text-xl px-4 py-2 whitespace-nowrap font-semibold">
                       Syllabus
                     </td>
@@ -398,4 +362,4 @@ const StudentRequests = () => {
   );
 };
 
-export default StudentRequests;
+export default SchoolRequests;
