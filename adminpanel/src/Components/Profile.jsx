@@ -1,10 +1,9 @@
-
-
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
- import { ToastContainer, Bounce , toast } from "react-toastify";
+import { ToastContainer, Bounce, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {URLPath} from "../URLPath";
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -16,7 +15,7 @@ const Profile = () => {
         const accessToken = localStorage.getItem("accessToken");
 
         if (accessToken) {
-          const response = await axios.get("http://localhost:8000/profile", {
+          const response = await axios.get(`${URLPath}/profile`, {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
@@ -26,7 +25,6 @@ const Profile = () => {
 
           console.log(userData.data);
           setProfile(userData.data);
-
         } else {
           console.error("No access token found");
           toast.error("No access token found", {
@@ -89,10 +87,9 @@ const Profile = () => {
               <div className="photo-wrapper p-2">
                 <img
                   className="w-32 h-32 rounded-full mx-auto"
-                  src={`http://localhost:8000${profile.image}`}
+                  src={`${URLPath}${profile.image}`}
                   alt="No profile"
                 />
-              
               </div>
               <div className="p-2">
                 <h3 className="text-center text-2xl text-gray-900 font-medium leading-8">

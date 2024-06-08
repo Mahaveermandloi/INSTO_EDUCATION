@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { RxCross1 } from "react-icons/rx";
 import { ToastContainer, toast, Bounce } from "react-toastify";
-
+import { URLPath } from "../URLPath";
 const Gallery = () => {
   const [gallery, setGallery] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -17,7 +17,7 @@ const Gallery = () => {
 
         if (accessToken) {
           const response = await axios.get(
-            "http://localhost:8000/api/v1/gallery/getGallery",
+            `${URLPath}/api/v1/gallery/getGallery`,
             {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -26,7 +26,7 @@ const Gallery = () => {
           );
 
           setGallery(response.data);
-          console.log(response.data)
+          console.log(response.data);
         } else {
           console.error("No access token found");
         }
@@ -38,9 +38,7 @@ const Gallery = () => {
     fetchGallery();
   }, []);
 
-
   const handleFileChange = (event) => {
-  
     const file = event.target.files[0];
     if (file && file.type.startsWith("image/")) {
       setSelectedFile(file);
@@ -59,7 +57,6 @@ const Gallery = () => {
     }
   };
 
-
   const handleCaptionChange = (event) => {
     setCaption(event.target.value);
   };
@@ -74,7 +71,7 @@ const Gallery = () => {
         const accessToken = localStorage.getItem("accessToken");
 
         const response = await axios.post(
-          "http://localhost:8000/api/v1/gallery/postGallery",
+          `${URLPath}/api/v1/gallery/postGallery`,
           formData,
           {
             headers: {
@@ -129,10 +126,9 @@ const Gallery = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this image?")) {
       try {
-        
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.delete(
-          `http://localhost:8000/api/v1/gallery/deleteGalleryImage/${id}`,
+          `${URLPath}/api/v1/gallery/deleteGalleryImage/${id}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -200,21 +196,22 @@ const Gallery = () => {
 
           <div className="hidden  lg:w-3/4  lg:flex lg:flex-col lg:items-end lg:mt-5  lg:p-5 lg:border-2 lg:border-gray-400 lg:rounded-lg lg:shadow-lg">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {gallery && gallery.map(({id , gallery_img}) => (
-                <div key={id} className="relative">
-                  <img
-                    className="h-auto max-w-full rounded-lg"
-                    src={`http://localhost:8000${gallery_img}`}
-                    alt={`Gallery image`}
-                  />
-                  <button
-                    onClick={() => handleDelete(id)}
-                    className="absolute top-2 right-2 bg-[#ed1450] text-white p-1 rounded-full"
-                  >
-                    <RxCross1 size={30} className="p-1" />
-                  </button>
-                </div>
-              ))}
+              {gallery &&
+                gallery.map(({ id, gallery_img }) => (
+                  <div key={id} className="relative">
+                    <img
+                      className="h-auto max-w-full rounded-lg"
+                      src={`${URLPath}${gallery_img}`}
+                      alt={`Gallery image`}
+                    />
+                    <button
+                      onClick={() => handleDelete(id)}
+                      className="absolute top-2 right-2 bg-[#ed1450] text-white p-1 rounded-full"
+                    >
+                      <RxCross1 size={30} className="p-1" />
+                    </button>
+                  </div>
+                ))}
             </div>
 
             {/* images should be displayed here  in desktop view  */}
@@ -224,31 +221,43 @@ const Gallery = () => {
             <div className="flex items-center justify-center w-full">
               <label
                 htmlFor="dropzone-file"
-                className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 "
+                className="flex flex-col items-center justify-center w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-100 "
               >
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <svg
-                    className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 20 16"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                    />
-                  </svg>
-                  <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                    <span className="font-semibold">Click to upload</span> or
-                    drag and drop
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    SVG, PNG, JPG or GIF (MAX. 800x400px)
-                  </p>
+                  {selectedFile ? (
+                    <div className="flex justify-center mb-4">
+                      <img
+                        className="rounded-lg"
+                        src={URL.createObjectURL(selectedFile)}
+                        alt="Preview"
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      <svg
+                        className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 20 16"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                        />
+                      </svg>
+                      <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                        <span className="font-semibold">Click to upload</span>{" "}
+                        or drag and drop
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        SVG, PNG, JPG or GIF (MAX. 800x400px)
+                      </p>
+                    </>
+                  )}
                 </div>
                 <input
                   id="dropzone-file"
@@ -288,44 +297,53 @@ const Gallery = () => {
             <div className="mt-2 p-2 border-2 border-gray-400 rounded-lg shadow-lg">
               <div className="flex items-center justify-center w-full">
                 <label
-                  htmlFor="dropzone-file-mobile"
-                  className="flex flex-col items-center justify-center w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-300  "
+                  htmlFor="dropzone-file"
+                  className="flex flex-col items-center justify-center w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-100 "
                 >
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <svg
-                      className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 16"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                      />
-                    </svg>
-                    <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                      <span className="font-semibold">Click to upload</span> or
-                      drag and drop
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      SVG, PNG, JPG or GIF (MAX. 800x400px)
-                    </p>
+                    {selectedFile ? (
+                      <div className="flex justify-center mb-4">
+                        <img
+                          className="rounded-lg"
+                          src={URL.createObjectURL(selectedFile)}
+                          alt="Preview"
+                        />
+                      </div>
+                    ) : (
+                      <>
+                        <svg
+                          className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 20 16"
+                        >
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                          />
+                        </svg>
+                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                          <span className="font-semibold">Click to upload</span>{" "}
+                          or drag and drop
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          SVG, PNG, JPG or GIF (MAX. 800x400px)
+                        </p>
+                      </>
+                    )}
                   </div>
                   <input
-               id="dropzone-file-mobile"
-                  type="file"
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                />
-
-
+                    id="dropzone-file"
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                  />
                 </label>
-
               </div>
               <input
                 type="text"
@@ -334,8 +352,7 @@ const Gallery = () => {
                 onChange={handleCaptionChange}
                 className="mt-2 p-2 border rounded-lg w-full"
               />
-              
-              
+
               <button
                 className="w-full text-white  bg-[#ed1450] hover:bg-primary-700   font-medium  text-md rounded-md px-5 py-2.5 text-center"
                 onClick={handleUpload}
@@ -347,27 +364,25 @@ const Gallery = () => {
 
           <div className="  border-2 border-purple-300  lg:flex lg:flex-col lg:items-end lg:mt-5  lg:p-5 lg:border-2 lg:border-gray-400 lg:rounded-lg lg:shadow-lg">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {gallery && gallery.map(({gallery_img, id}) => (
-                <div key={id} className="relative">
-                  <img
-                    className="h-auto max-w-full rounded-lg"
-                    src={`http://localhost:8000${gallery_img}`}
-                    alt={`Gallery image`}
-                  />
-                  <button
-                    onClick={() => handleDelete(id)}
-                    className="absolute top-2 right-2 bg-[#ed1450] text-white p-1 rounded-full"
-                  >
-                    <RxCross1 size={20} className="p-1" />
-                  </button>
-                </div>
-              ))}
+              {gallery &&
+                gallery.map(({ gallery_img, id }) => (
+                  <div key={id} className="relative">
+                    <img
+                      className="h-auto max-w-full rounded-lg"
+                      src={`${URLPath}${gallery_img}`}
+                      alt={`Gallery image`}
+                    />
+                    <button
+                      onClick={() => handleDelete(id)}
+                      className="absolute top-2 right-2 bg-[#ed1450] text-white p-1 rounded-full"
+                    >
+                      <RxCross1 size={20} className="p-1" />
+                    </button>
+                  </div>
+                ))}
             </div>
           </div>
         </div>
-
-
-
       </div>
     </>
   );

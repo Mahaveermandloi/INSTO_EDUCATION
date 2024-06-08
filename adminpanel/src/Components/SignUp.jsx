@@ -3,7 +3,9 @@ import axios from "axios";
 import logo from "../assets/Intso_Slicing_Assets/Header_Logo/Header_Logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast, Bounce } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
+
+import {URLPath} from "../URLPath";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -34,17 +36,20 @@ const SignUp = () => {
     e.preventDefault();
 
     if (!validatePassword(formData.password)) {
-      toast.error("Password must be at least 8 characters long and contain both letters and numbers.", {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
+      toast.error(
+        "Password must be at least 8 characters long and contain both letters and numbers.",
+        {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        }
+      );
       return;
     }
 
@@ -66,10 +71,7 @@ const SignUp = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:8000/signup",
-        formData
-      );
+      const response = await axios.post(`${URL}/signup`, formData);
 
       setIsSubmitting(false);
 
@@ -92,7 +94,8 @@ const SignUp = () => {
     } catch (error) {
       setIsSubmitting(false);
 
-      if (error.response && error.response.status === 409) { // Assuming 409 Conflict for existing user
+      if (error.response && error.response.status === 409) {
+        // Assuming 409 Conflict for existing user
         toast.error("User already exists. Please use a different email.", {
           position: "top-center",
           autoClose: 3000,

@@ -3,7 +3,7 @@ import axios from "axios";
 import { ToastContainer, Bounce, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaInfoCircle } from "react-icons/fa";
-
+import { URLPath } from "../../URLPath";
 const SchoolRequests = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSchool, setSelectedSchool] = useState(null);
@@ -14,7 +14,7 @@ const SchoolRequests = () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.get(
-          "http://localhost:8000/api/v1/school/getSchoolData",
+          `${URLPath}/api/v1/school/getSchoolData`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -46,7 +46,7 @@ const SchoolRequests = () => {
     try {
       const accessToken = localStorage.getItem("accessToken");
       const response = await axios.put(
-        `http://localhost:8000/api/v1/school/approveSchool/${selectedSchool.school_id}`,
+        `${URLPath}/api/v1/school/approveSchool/${selectedSchool.school_id}`,
         {},
         {
           headers: {
@@ -79,7 +79,7 @@ const SchoolRequests = () => {
     try {
       const accessToken = localStorage.getItem("accessToken");
       const response = await axios.put(
-        `http://localhost:8000/api/v1/school/rejectSchool/${selectedSchool.school_id}`,
+        `${URLPath}/api/v1/school/rejectSchool/${selectedSchool.school_id}`,
         {},
         {
           headers: {

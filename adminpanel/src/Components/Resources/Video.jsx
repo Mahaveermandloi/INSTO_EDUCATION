@@ -2,21 +2,17 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { RxCross1 } from "react-icons/rx";
 import { ToastContainer, Bounce, toast } from "react-toastify";
+import { URLPath } from "../../URLPath";
 
 const Video = () => {
   const [data, setData] = useState([]);
-
   const [selectedFile, setSelectedFile] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-
   const [filter, setFilter] = useState(false);
-
   const [resourceURL, setResourceURL] = useState("");
-
   const [isMobileFormVisible, setIsMobileFormVisible] = useState(false);
   const [resource_class, setClass] = useState(true);
-
   const [selectedOption, setSelectedOption] = useState("all");
 
   const handleClassChange = (event) => {
@@ -30,7 +26,7 @@ const Video = () => {
       const accessToken = localStorage.getItem("accessToken");
       if (accessToken) {
         const response = await axios.get(
-          "http://localhost:8000/api/v1/resource/get-all-resources",
+          `${URLPath}/api/v1/resource/get-all-resources`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -132,7 +128,7 @@ const Video = () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.post(
-          "http://localhost:8000/api/v1/resource/create-resource",
+          `${URLPath}/api/v1/resource/create-resource`,
           formData,
           {
             headers: {
@@ -195,7 +191,7 @@ const Video = () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.delete(
-          `http://localhost:8000/api/v1/resource/delete-resource/${id}`,
+          `${URLPath}/api/v1/resource/delete-resource/${id}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -354,12 +350,12 @@ const Video = () => {
                     <>
                       <div key={id} className="relative">
                         <a
-                          href=" https://www.youtube.com/watch?v=lXQgSJsqLyw"
+                          href="https://www.youtube.com/watch?v=K7Xo3_QclA4"
                           target="_blank"
                         >
                           <img
                             className="h-auto max-w-full rounded-lg hover:opacity-50"
-                            src={`http://localhost:8000${thumbnail}`}
+                            src={`${URLPath}${thumbnail}`}
                             alt={`data image ${id}`}
                           />
                         </a>
@@ -589,7 +585,7 @@ const Video = () => {
                       <div key={id} className="relative">
                         <img
                           className="h-auto max-w-full rounded-lg"
-                          src={`http://localhost:8000${resource_url}`}
+                          src={`${URLPath}${resource_url}`}
                           alt={`data image ${id}`}
                         />
 
@@ -736,7 +732,7 @@ const Video = () => {
                     >
                       <img
                         className="h-auto max-w-full rounded-lg"
-                        src={`http://localhost:8000${thumbnail}`}
+                        src={`${URLPath}${thumbnail}`}
                         alt={`data image ${id}`}
                       />
                     </a>

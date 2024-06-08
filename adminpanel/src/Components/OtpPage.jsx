@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast, Bounce } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import logo from "../assets/Intso_Slicing_Assets/Header_Logo/Header_Logo.png";
-
+import {URLPath} from "../URLPath";
 const OtpPage = () => {
   const [otpInput, setOtpInput] = useState("");
   const { email } = useParams();
@@ -12,7 +12,7 @@ const OtpPage = () => {
 
   const handleVerify = async () => {
     try {
-      const response = await axios.post("http://localhost:8000/verify-otp", {
+      const response = await axios.post(`${URL}/verify-otp`, {
         getOtp: otpInput,
         email: email,
       });
@@ -77,9 +77,9 @@ const OtpPage = () => {
       progress: undefined,
       theme: "light",
     });
-    
+
     try {
-      await axios.post("http://localhost:8000/check-user", {
+      await axios.post(`${URL}/check-user`, {
         email: email,
       });
       toast.success("OTP resent successfully", {
@@ -106,7 +106,8 @@ const OtpPage = () => {
         });
       } else {
         toast.error(
-          "Error resending OTP: " + (error.response.data.message || error.message),
+          "Error resending OTP: " +
+            (error.response.data.message || error.message),
           {
             position: "top-center",
             autoClose: 3000,

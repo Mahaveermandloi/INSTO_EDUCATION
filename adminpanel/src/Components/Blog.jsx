@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { RxCross1 } from "react-icons/rx";
+import { URLPath} from "../URLPath";
 
 import { ToastContainer, Bounce, toast } from "react-toastify";
 
@@ -16,11 +17,9 @@ const Blog = () => {
     try {
       const accessToken = localStorage.getItem("accessToken");
       if (accessToken) {
-        const response = await axios.get(
-          "http://localhost:8000/api/v1/home/homeData"
-        );
+        const response = await axios.get(`${URLPath}/api/v1/home/homeData`);
         console.log(response.data.homedata.blogData);
-        
+
         setGallery(response.data.homedata.blogData);
       } else {
         console.error("No access token found");
@@ -29,7 +28,6 @@ const Blog = () => {
       console.error("Error fetching gallery:", error);
     }
   };
-
 
   useEffect(() => {
     fetchGallery();
@@ -103,14 +101,14 @@ export default Blog;
 
 const BlogBox = ({ id, image, description, title, createdAt, posted_By }) => {
   const navigate = useNavigate();
- const [gallery, setGallery] = useState([]);
-  
- const handleDelete = async (id) => {
+  const [gallery, setGallery] = useState([]);
+
+  const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this image?")) {
       try {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.delete(
-          `http://localhost:8000/api/v1/blogs/delete-blogs/${id}`,
+          `${URLPath}/api/v1/blogs/delete-blogs/${id}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -128,15 +126,12 @@ const BlogBox = ({ id, image, description, title, createdAt, posted_By }) => {
             progress: undefined,
             theme: "light",
           });
-          
 
           setTimeout(() => {
             window.location.reload();
-
           }, 1000);
         }
       } catch (error) {
-
         console.error("Error deleting image:", error);
 
         toast.error("Error deleting image", {
@@ -163,7 +158,7 @@ const BlogBox = ({ id, image, description, title, createdAt, posted_By }) => {
       key={id}
       className="mb-4 border-2 border-gray-200 rounded-lg p-5 space-y-1 shadow-xl"
     >
-      <img src={`http://localhost:8000${image}`} alt="" className="w-full" />
+      <img src={`${URLPath}${image}`} alt="" className="w-full" />
       <h3 className="text-md font-semibold">{title}</h3>
       <p>{description}</p>
       <div className="flex justify-between font-bold">

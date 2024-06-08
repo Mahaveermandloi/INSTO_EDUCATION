@@ -4,7 +4,7 @@ import axios from "axios";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import logo from "../assets/Intso_Slicing_Assets/Header_Logo/Header_Logo.png";
-
+import { URLPath } from "../URLPath";
 const ChangePassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

@@ -1,9 +1,9 @@
- 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {URLPath} from "../URLPath";
 
 const UpdateProfile = () => {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ const UpdateProfile = () => {
         const accessToken = localStorage.getItem("accessToken");
 
         if (accessToken) {
-          const response = await axios.get("http://localhost:8000/profile", {
+          const response = await axios.get(`${URL}/profile`, {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
@@ -133,7 +133,7 @@ const UpdateProfile = () => {
 
     try {
       const response = await axios.put(
-        "http://localhost:8000/update-profile",
+        `${URL}/update-profile`,
         updatedData,
         {
           headers: {
@@ -153,12 +153,10 @@ const UpdateProfile = () => {
         progress: undefined,
         theme: "light",
       });
-      
+
       setTimeout(() => {
         navigate("/profile");
-        
       }, 2000);
-
 
       console.log("Profile updated successfully:", response.data);
     } catch (error) {
@@ -176,7 +174,6 @@ const UpdateProfile = () => {
       }
 
       console.error("email error ", error);
-    
     }
   };
 

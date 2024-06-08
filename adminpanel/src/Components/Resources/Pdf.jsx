@@ -5,6 +5,8 @@ import { ToastContainer, Bounce, toast } from "react-toastify";
 
 import thumbnail from "../../../public/pdf.png";
 
+import { URLPath } from "../../URLPath";
+
 const Pdf = () => {
   const [data, setData] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -28,7 +30,7 @@ const Pdf = () => {
       const accessToken = localStorage.getItem("accessToken");
       if (accessToken) {
         const response = await axios.get(
-          "http://localhost:8000/api/v1/resource/get-all-resources",
+          `${URLPath}/api/v1/resource/get-all-resources`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -123,7 +125,7 @@ const Pdf = () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.post(
-          "http://localhost:8000/api/v1/resource/create-resource",
+          `${URLPath}/api/v1/resource/create-resource`,
           formData,
           {
             headers: {
@@ -186,7 +188,7 @@ const Pdf = () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.delete(
-          `http://localhost:8000/api/v1/resource/delete-resource/${id}`,
+          `${URLPath}/api/v1/resource/delete-resource/${id}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -568,7 +570,7 @@ const Pdf = () => {
                       <div key={id} className="relative">
                         <img
                           className="h-auto max-w-full rounded-lg"
-                          src={`http://localhost:8000${resource_url}`}
+                          src={`${URLPath}${resource_url}`}
                           alt={`data pdf ${id}`}
                         />
 

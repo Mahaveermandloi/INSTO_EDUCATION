@@ -4,7 +4,7 @@ import { RxCross1 } from "react-icons/rx";
 import Editor from "./Editor";
 import { ToastContainer, Bounce, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
+import {URLPath} from "../URLPath";
 const CreateBlog = () => {
   const [gallery, setGallery] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -19,9 +19,7 @@ const CreateBlog = () => {
     try {
       const accessToken = localStorage.getItem("accessToken");
       if (accessToken) {
-        const response = await axios.get(
-          "http://localhost:8000/api/v1/blogs/get-blogs"
-        );
+        const response = await axios.get(`${URLPath}/api/v1/blogs/get-blogs`);
         console.log(response.data.blogs);
         setGallery(response.data.blogs);
       } else {
@@ -71,7 +69,7 @@ const CreateBlog = () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.post(
-          "http://localhost:8000/api/v1/blogs/post-blogs",
+          `${URLPath}/api/v1/blogs/post-blogs`,
           formData,
           {
             headers: {
@@ -102,7 +100,6 @@ const CreateBlog = () => {
           setTimeout(() => {
             navigate("/blog");
           }, 1000);
-          
         }
       } catch (error) {
         console.error("Error uploading image:", error);

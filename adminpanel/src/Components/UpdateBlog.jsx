@@ -3,7 +3,7 @@ import axios from "axios";
 import { ToastContainer, Bounce, toast } from "react-toastify";
 import Editor from "./Editor";
 import { useNavigate, useParams } from "react-router-dom";
-
+import {URLPath} from "../URLPath";
 const UpdateBlog = () => {
   const [blogData, setBlogData] = useState({});
   const [selectedFile, setSelectedFile] = useState(null);
@@ -16,7 +16,7 @@ const UpdateBlog = () => {
         try {
           const accessToken = localStorage.getItem("accessToken");
           const response = await axios.get(
-            `http://localhost:8000/api/v1/blogs/get-edit-blog-details/${id}`,
+            `${URL}/api/v1/blogs/get-edit-blog-details/${id}`,
             {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -91,7 +91,7 @@ const UpdateBlog = () => {
 
       const accessToken = localStorage.getItem("accessToken");
       const response = await axios.put(
-        `http://localhost:8000/api/v1/blogs/update-blog-details/${id}`,
+        `${URL}/api/v1/blogs/update-blog-details/${id}`,
         formData,
         {
           headers: {

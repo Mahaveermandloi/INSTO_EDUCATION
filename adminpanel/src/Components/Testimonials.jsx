@@ -3,7 +3,7 @@ import axios from "axios";
 import { RxCross1 } from "react-icons/rx";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import logo from "../assets/pdf.png";
-
+import { URLPath } from "../URLPath";
 const Testimonials = () => {
   const [testimonial, setTestimonial] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -19,7 +19,7 @@ const Testimonials = () => {
 
         if (accessToken) {
           const response = await axios.get(
-            "http://localhost:8000/api/v1/testimonial/get-testimonial",
+            `${URLPath}/api/v1/testimonial/get-testimonial`,
             {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -80,7 +80,7 @@ const Testimonials = () => {
         const accessToken = localStorage.getItem("accessToken");
 
         const response = await axios.post(
-          "http://localhost:8000/api/v1/testimonial/post-testimonial",
+          `${URLPath}/api/v1/testimonial/post-testimonial`,
           formData,
           {
             headers: {
@@ -137,7 +137,7 @@ const Testimonials = () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.delete(
-          `http://localhost:8000/api/v1/testimonial/delete-testimonial/${id}`,
+          `${URLPath}/api/v1/testimonial/delete-testimonial/${id}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -212,7 +212,7 @@ const Testimonials = () => {
                 >
                   <img
                     className="object-cover w-full rounded-t-lg h-28 md:w-48 md:rounded-none md:rounded-s-lg bg-yellow-400"
-                    src={`http://localhost:8000${image}`}
+                    src={`${URLPath}${image}`}
                     alt=""
                   />
                   <div className="flex flex-col justify-between p-4 leading-normal">
@@ -239,43 +239,49 @@ const Testimonials = () => {
             <div className="flex items-center justify-center w-full">
               <label
                 htmlFor="dropzone-file"
-                className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 "
+                className="flex flex-col items-center justify-center w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-100 "
               >
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <svg
-                    className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 20 16"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h3"
-                    />
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M10 12v4m0 0-3-3m3 3 3-3"
-                    />
-                  </svg>
-                  <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                    <span className="font-semibold">Click to upload</span> or
-                    drag and drop
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    SVG, PNG, JPG or GIF (MAX. 800x400px)
-                  </p>
+                  {selectedFile ? (
+                    <div className="flex justify-center mb-4">
+                      <img
+                        className="rounded-lg"
+                        src={URL.createObjectURL(selectedFile)}
+                        alt="Preview"
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      <svg
+                        className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 20 16"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                        />
+                      </svg>
+                      <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                        <span className="font-semibold">Click to upload</span>{" "}
+                        or drag and drop
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        SVG, PNG, JPG or GIF (MAX. 800x400px)
+                      </p>
+                    </>
+                  )}
                 </div>
                 <input
                   id="dropzone-file"
                   type="file"
                   className="hidden"
+                  accept="image/*"
                   onChange={handleFileChange}
                 />
               </label>
@@ -322,35 +328,47 @@ const Testimonials = () => {
           <div className="mt-2 p-2 border-2 border-gray-400 rounded-lg shadow-lg">
             <div className="flex items-center justify-center w-full">
               <label
-                htmlFor="dropzone-file-mobile"
-                className="flex flex-col items-center justify-center w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-300  "
+                htmlFor="dropzone-file"
+                className="flex flex-col items-center justify-center w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-100 "
               >
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <svg
-                    className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 20 16"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                    />
-                  </svg>
-                  <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                    <span className="font-semibold">Click to upload</span> or
-                    drag and drop
-                  </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    SVG, PNG, JPG or GIF (MAX. 800x400px)
-                  </p>
+                  {selectedFile ? (
+                    <div className="flex justify-center mb-4">
+                      <img
+                        className="rounded-lg"
+                        src={URL.createObjectURL(selectedFile)}
+                        alt="Preview"
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      <svg
+                        className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 20 16"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                        />
+                      </svg>
+                      <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                        <span className="font-semibold">Click to upload</span>{" "}
+                        or drag and drop
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        SVG, PNG, JPG or GIF (MAX. 800x400px)
+                      </p>
+                    </>
+                  )}
                 </div>
                 <input
-                  id="dropzone-file-mobile"
+                  id="dropzone-file"
                   type="file"
                   className="hidden"
                   accept="image/*"
@@ -389,8 +407,8 @@ const Testimonials = () => {
                 <div className="relative flex h-28 lg:flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:bg-gray-100 overflow-hidden">
                   <img
                     className="object-cover  rounded-full  h-20 w-20 md:rounded-none md:rounded-s-lg bg-yellow-400"
-                    src={`http://localhost:8000${image}`}
-                    alt=""
+                    src={`${URLPath}${image}`}
+                    alt="image"
                   />
                   <div className="flex flex-col justify-between p-4 leading-normal overflow-hidden">
                     <h5 className="text-md font-bold tracking-tight text-gray-900 ">

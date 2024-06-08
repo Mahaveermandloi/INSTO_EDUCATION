@@ -4,6 +4,7 @@ import axios from "axios";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import logo from "../assets/Intso_Slicing_Assets/Header_Logo/Header_Logo.png";
+import {URLPath} from "../URLPath";
 
 const UpdatePassword = () => {
   useEffect(() => {
@@ -40,8 +41,6 @@ const UpdatePassword = () => {
           progress: undefined,
           theme: "light",
         }
-
-        
       );
       return;
     }
@@ -50,7 +49,7 @@ const UpdatePassword = () => {
       const accessToken = localStorage.getItem("accessToken");
 
       const response = await axios.put(
-        "http://localhost:8000/update-password",
+        `${URL}/update-password`,
         {
           oldPassword,
           newPassword,

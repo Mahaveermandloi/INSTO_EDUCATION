@@ -4,12 +4,17 @@ import axios from "axios";
 import logo from "../assets/Intso_Slicing_Assets/Header_Logo/Header_Logo.png";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { URLPath } from "../URLPath";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   localStorage.removeItem("accessToken");
+  // }, );
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -32,7 +37,7 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:8000/login", {
+      const response = await axios.post(`${URL}/login`, {
         email,
         password,
       });
@@ -55,6 +60,7 @@ const Login = () => {
 
         setTimeout(() => {
           navigate("/dashboard");
+          window.location.reload();
         }, 2000);
       }
     } catch (error) {

@@ -3,10 +3,9 @@ import axios from "axios";
 import { RxCross1 } from "react-icons/rx";
 import { ToastContainer, Bounce, toast } from "react-toastify";
 import { RiFilter3Fill } from "react-icons/ri";
-
+import { URLPath } from "../../URLPath";
 const Image = () => {
   const [data, setData] = useState([]);
-
   const [selectedFile, setSelectedFile] = useState(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -33,7 +32,7 @@ const Image = () => {
       const accessToken = localStorage.getItem("accessToken");
       if (accessToken) {
         const response = await axios.get(
-          "http://localhost:8000/api/v1/resource/get-all-resources",
+          `${URLPath}/api/v1/resource/get-all-resources`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -131,7 +130,7 @@ const Image = () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.post(
-          "http://localhost:8000/api/v1/resource/create-resource",
+          `${URLPath}/api/v1/resource/create-resource`,
           formData,
           {
             headers: {
@@ -194,7 +193,7 @@ const Image = () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
         const response = await axios.delete(
-          `http://localhost:8000/api/v1/resource/delete-resource/${id}`,
+          `${URLPath}/api/v1/resource/delete-resource/${id}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -352,7 +351,7 @@ const Image = () => {
                       <div key={id} className="relative">
                         <img
                           className="h-auto max-w-full rounded-lg"
-                          src={`http://localhost:8000${resource_url}`}
+                          src={`${URLPath}${resource_url}`}
                           alt={`data image ${id}`}
                         />
 
@@ -487,7 +486,6 @@ const Image = () => {
         {/* Toggle button and form for mobile view */}
 
         <div className="lg:hidden m-2 flex flex-col gap-2">
-         
           <div className="flex">
             <button
               className="p-2 bg-[#ed1450] rounded-md text-white w-full font-bold"
@@ -583,7 +581,7 @@ const Image = () => {
                       <div key={id} className="relative">
                         <img
                           className="h-auto max-w-full rounded-lg"
-                          src={`http://localhost:8000${resource_url}`}
+                          src={`${URLPath}${resource_url}`}
                           alt={`data image ${id}`}
                         />
 
@@ -726,7 +724,7 @@ const Image = () => {
                   <div key={id} className="relative">
                     <img
                       className="h-auto max-w-full rounded-lg"
-                      src={`http://localhost:8000${resource_url}`}
+                      src={`${URLPath}${resource_url}`}
                       alt={`data image ${id}`}
                     />
                     <button

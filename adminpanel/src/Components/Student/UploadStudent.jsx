@@ -22,7 +22,7 @@ const UploadStudent = () => {
       const accessToken = localStorage.getItem("accessToken");
 
       const schoolResponse = await axios.get(
-        "http://localhost:8000/api/v1/school/getSchoolData",
+        "http://localhost:8000/api/v1/school/get-approved-schools",
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -30,8 +30,9 @@ const UploadStudent = () => {
         }
       );
 
+      console.log(schoolResponse.data);
       if (schoolResponse.status === 200) {
-        setSchoolNameList(schoolResponse.data.data.getData);
+        setSchoolNameList(schoolResponse.data);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -48,30 +49,56 @@ const UploadStudent = () => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("school_name", selectedSchoolName);
-    formData.append("file", selectedFile);
+    // Ask for confirmation before proceeding using a toast message
+    const confirmationToastId = toast.info(
+      "ARE YOU SURE YOU WANT TO UPLOAD STUDENT DATA ? ( THIS CHANGE IS IRREVERSIBLE ) ",
+      {
+        autoClose: false, // Disable auto close for confirmation toast
+        closeOnClick: false,
+        draggable: false,
 
-    try {
-      const accessToken = localStorage.getItem("accessToken");
-
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/fetchExcelDetail/uploadstudentlist",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        toast.success("Student Data Uploaded Successfully!!!");
+        onClose: () => {
+          toast.dismiss(confirmationToastId);
+        },
+        closeButton: (
+          <button
+            onClick={() => {
+              toast.dismiss(confirmationToastId);
+              proceedWithUpload();
+            }}
+          >
+            Confirm
+          </button>
+        ),
       }
-    } catch (error) {
-      toast.error("Error while uploading the data ");
-    }
+    );
+
+    const proceedWithUpload = async () => {
+      const formData = new FormData();
+      formData.append("school_name", selectedSchoolName);
+      formData.append("file", selectedFile);
+
+      try {
+        const accessToken = localStorage.getItem("accessToken");
+
+        const response = await axios.post(
+          "http://localhost:8000/api/v1/fetchExcelDetail/uploadstudentlist",
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          toast.success("Student Data Uploaded Successfully!!!");
+        }
+      } catch (error) {
+        toast.error("Error while uploading the data");
+      }
+    };
   };
 
   return (
@@ -107,7 +134,7 @@ const UploadStudent = () => {
 
             {schoolNameList &&
               schoolNameList.map(({ school_name, school_id }) => (
-                <option value={school_name} key={school_id}>
+                <option value={school_name} key={school_id} className="text-xl">
                   {school_name} {school_id}
                 </option>
               ))}

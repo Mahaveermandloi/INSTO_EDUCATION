@@ -156,17 +156,17 @@ const SideBar = ({ isOpen, toggleSidebar }) => {
                   School Requests
                 </li>
               </Link>
-              <Link to="/schoolist">
+              {/* <Link to="/schoolist">
                 <li className="flex items-center cursor-pointer text-xl hover:bg-gray-700 p-2 rounded">
                   School List
                 </li>
-              </Link>
+              </Link> */}
 
-              <Link to="/uploadschool">
+              {/* <Link to="/uploadschool">
                 <li className="flex items-center cursor-pointer text-xl hover:bg-gray-700 p-2 rounded">
                   Upload School
                 </li>
-              </Link>
+              </Link> */}
             </ul>
 
             <Link to="/blog">
